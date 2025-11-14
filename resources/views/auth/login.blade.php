@@ -64,7 +64,7 @@
 </div>
 
 <script>
-    // Toggle para mostrar/ocultar contraseña
+
     document.getElementById('toggle-password').addEventListener('click', function() {
         const passwordField = document.getElementById('password');
         const icon = this.querySelector('i');
@@ -79,7 +79,7 @@
         }
     });
 
-    // Validación visual básica
+
     document.querySelector('form').addEventListener('submit', function(e) {
         const user = document.getElementById('user');
         const password = document.getElementById('password');
