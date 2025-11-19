@@ -1,81 +1,44 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use App\Http\Middleware\CheckRole;
+use Illuminate\Support\Facades\Auth;
 
-/*
-|--------------------------------------------------------------------------
-| Rutas públicas
-|--------------------------------------------------------------------------
-*/
-Route::get('/', fn() => redirect('/login'));
+// Importar controladores
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\JefeController;
+use App\Http\Controllers\MaestroController;
+use App\Http\Controllers\CoordinadorController;
 
-Route::get('/login', fn() => view('auth.login'))->name('login');
-
-Route::post('/login', function (Request $request) {
-    $user = strtolower($request->input('user'));
-    session()->flush();
-
-    switch ($user) {
-        case 'coordinador':
-            session(['role' => 'coordinador']);
-            return redirect('/coordinador');
-        case 'maestro':
-            session(['role' => 'maestro']);
-            return redirect('/maestro');
-        case 'alumno':
-            session(['role' => 'alumno']);
-            return redirect('/alumno');
-        default:
-            return redirect('/login')->with('error', 'Usuario no válido');
-    }
+Route::get('/', function () {
+    return view('welcome');
 });
 
-Route::get('/logout', function () {
-    session()->flush();
-    return redirect('/login');
-});
+Auth::routes();
 
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-/*
-|--------------------------------------------------------------------------
-| Rutas del Alumno
-|--------------------------------------------------------------------------
-*/
-Route::middleware([CheckRole::class])->prefix('alumno')->group(function () {
-    Route::get('/', fn() => view('alumno.dashboard'));
-    Route::get('/elegir_materias', fn() => view('alumno.elegir_materias'));
-    Route::get('/promedios', fn() => view('alumno.promedios'));
-    Route::get('/materias_semestre', fn() => view('alumno.materias_semestre'));
-});
+// DASHBOARD ADMIN
+Route::get('/admin/dashboard', [AdminController::class, 'index'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.dashboard');
 
+// DASHBOARD ALUMNO
+Route::get('/alumno/dashboard', [AlumnoController::class, 'index'])
+    ->middleware(['auth', 'role:alumno'])
+    ->name('alumno.dashboard');
 
-/*
-|--------------------------------------------------------------------------
-| Rutas del Maestro
-|--------------------------------------------------------------------------
-*/
-Route::middleware([CheckRole::class])->prefix('maestro')->group(function () {
-    Route::get('/', fn() => view('maestro.dashboard'));
-    Route::get('/materias', fn() => view('maestro.materias'));
-    
-    Route::get('/asistencias', function() {
-        $materiasISC = ['Matemáticas', 'Programación', 'Historia', 'Física', 'Inglés'];
-        $alumnos = ['Juan Pérez', 'Ana Gómez', 'Luis Hernández', 'María Torres', 'Pedro Ramírez'];
-        return view('maestro.asistencias', compact('materiasISC', 'alumnos'));
-    });
-});
+// DASHBOARD JEFE
+Route::get('/jefe/dashboard', [JefeController::class, 'index'])
+    ->middleware(['auth', 'role:jefe'])
+    ->name('jefe.dashboard');
 
+// DASHBOARD MAESTRO
+Route::get('/maestro/dashboard', [MaestroController::class, 'index'])
+    ->middleware(['auth', 'role:maestro'])
+    ->name('maestro.dashboard');
 
-/*
-|--------------------------------------------------------------------------
-| Rutas del Coordinador
-|--------------------------------------------------------------------------
-*/
-Route::middleware([CheckRole::class])->prefix('coordinador')->group(function () {
-    Route::get('/', fn() => view('coordinador.dashboard'));
-    Route::get('/asignar_materias', fn() => view('coordinador.asignar_materias'));
-    // Route::get('/agregar_materias', fn() => view('coordinador.agregar_materias')); // Eliminada
-    Route::get('/asignar_materias_maestros', fn() => view('coordinador.asignar_materias_maestros'));
-});
+// DASHBOARD COORDINADOR
+Route::get('/coordinador/dashboard', [CoordinadorController::class, 'index'])
+    ->middleware(['auth', 'role:coordinador'])
+    ->name('coordinador.dashboard');
