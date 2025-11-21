@@ -42,7 +42,3 @@ Route::get('/maestro/dashboard', [MaestroController::class, 'index'])
 Route::get('/coordinador/dashboard', [CoordinadorController::class, 'index'])
     ->middleware(['auth', 'role:coordinador'])
     ->name('coordinador.dashboard');
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
