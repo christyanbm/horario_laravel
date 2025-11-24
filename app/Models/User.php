@@ -45,4 +45,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+   public function dashboardRoute()
+{
+    $rol = $this->getRoleNames()->first(); // Obtiene el rol asignado
+
+    return match ($rol) {
+        'admin' => '/admin/dashboard',
+        'alumno' => '/alumno/dashboard',
+        'coordinador' => '/coordinador/dashboard',
+        'jefe' => '/jefe/dashboard',
+        'maestro' => '/maestro/dashboard',
+        default => '/home',
+    };
+}
+
+
 }

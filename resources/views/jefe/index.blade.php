@@ -1,122 +1,28 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Jefe de Carrera</title>
-
-    <!-- Bootstrap 5 -->
-    <link 
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-        rel="stylesheet">
-
-</head>
-<body>
-
 @extends('layouts.app')
 
+@section('title', 'Dashboard Jefe de Carrera')
+
 @section('content')
+<div class="container mt-4">
+    <h2>Bienvenido, {{ Auth::user()->name }} (Jefe de Carrera)</h2>
 
-<div class="container mt-5">
-
-    <div class="row justify-content-center">
-        <div class="col-md-11">
-
-            <!-- Título -->
-            <div class="card shadow border-0 mb-4">
-                <div class="card-header bg-primary text-white text-center">
-                    <h3 class="fw-bold m-0">Panel del Jefe de Carrera</h3>
+    <div class="row g-4 mt-3">
+        <div class="col-md-4">
+            <a href="{{ route('jefe.grupos') }}" class="text-decoration-none">
+                <div class="card card-option p-3">
+                    <i class="fa fa-users fa-2x mb-2"></i>
+                    <h5>Gestión de Grupos</h5>
                 </div>
-                <div class="card-body">
-                    <p class="fs-5">
-                        Bienvenido <strong>{{ Auth::user()->name }}</strong>.  
-                        Aquí puedes gestionar carreras, maestros, horarios y grupos de tu departamento.
-                    </p>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ route('jefe.reportes') }}" class="text-decoration-none">
+                <div class="card card-option p-3">
+                    <i class="fa fa-chart-line fa-2x mb-2"></i>
+                    <h5>Reportes</h5>
                 </div>
-            </div>
-
-            <!-- Opciones -->
-            <div class="row g-4">
-
-                <!-- Carreras -->
-                <div class="col-md-4">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body text-center">
-                            <h5 class="fw-bold text-primary">Carreras</h5>
-                            <p class="text-muted">Administra y edita las carreras de la institución.</p>
-                            <a href="#" class="btn btn-primary w-100">Administrar carreras</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Maestros -->
-                <div class="col-md-4">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body text-center">
-                            <h5 class="fw-bold text-success">Maestros</h5>
-                            <p class="text-muted">Visualiza y gestiona los maestros de tu carrera.</p>
-                            <a href="#" class="btn btn-success w-100">Ver maestros</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Horarios -->
-                <div class="col-md-4">
-                    <div class="card shadow-sm border-0 h-100">
-                        <div class="card-body text-center">
-                            <h5 class="fw-bold text-warning">Horarios</h5>
-                            <p class="text-muted">Crea, edita y organiza los horarios por semestre.</p>
-                            <a href="#" class="btn btn-warning w-100">Gestionar horarios</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Grupos -->
-                <div class="col-md-4">
-                    <div class="card shadow-sm border-0 h-100 mt-4">
-                        <div class="card-body text-center">
-                            <h5 class="fw-bold text-danger">Grupos</h5>
-                            <p class="text-muted">Consulta y configura los grupos activos.</p>
-                            <a href="#" class="btn btn-danger w-100">Ver grupos</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Reportes -->
-                <div class="col-md-4">
-                    <div class="card shadow-sm border-0 h-100 mt-4">
-                        <div class="card-body text-center">
-                            <h5 class="fw-bold text-info">Reportes</h5>
-                            <p class="text-muted">Genera reportes académicos y administrativos.</p>
-                            <a href="#" class="btn btn-info w-100 text-white">Generar reportes</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Perfil -->
-                <div class="col-md-4">
-                    <div class="card shadow-sm border-0 h-100 mt-4">
-                        <div class="card-body text-center">
-                            <h5 class="fw-bold text-secondary">Perfil</h5>
-                            <p class="text-muted">Actualiza tu información personal y cuenta.</p>
-                            <a href="#" class="btn btn-secondary w-100">Editar perfil</a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
+            </a>
         </div>
     </div>
-
 </div>
-
 @endsection
-
-<!-- Bootstrap JS -->
-<script 
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-</script>
-
-</body>
-</html>

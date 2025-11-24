@@ -1,84 +1,52 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Alumno</title>
-
-    <!-- Bootstrap CSS -->
-    <link 
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" 
-        rel="stylesheet">
-</head>
-<body>
-
 @extends('layouts.app')
 
+@section('title', 'Dashboard Alumno')
+
 @section('content')
+<div class="container mt-4">
+    <h2 class="mb-4">Bienvenido, {{ Auth::user()->name }}</h2>
 
-<div class="container mt-5">
+    <div class="row g-4">
 
-    <div class="row justify-content-center">
-        <div class="col-md-10">
-
-            <!-- Tarjeta principal -->
-            <div class="card shadow-lg border-0">
-                <div class="card-header bg-primary text-white text-center">
-                    <h3 class="fw-bold m-0">
-                        Bienvenido al Dashboard Alumno
-                    </h3>
-                </div>
-
-                <div class="card-body">
-
-                    <p class="fs-5">
-                        Hola <strong>{{ Auth::user()->name }}</strong>, nos da gusto verte nuevamente.  
-                        Aquí podrás consultar tu información académica y opciones disponibles.
-                    </p>
-
-                    <hr>
-
-                    <!-- Secciones del dashboard -->
-                    <div class="row text-center">
-
-                        <div class="col-md-4 mb-4">
-                            <div class="p-4 shadow rounded bg-light">
-                                <h5 class="fw-bold text-primary">Mi Horario</h5>
-                                <p class="text-muted">Consulta las materias y horarios asignados.</p>
-                                <a href="#" class="btn btn-primary w-100">Ver horario</a>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <div class="p-4 shadow rounded bg-light">
-                                <h5 class="fw-bold text-success">Mis Materias</h5>
-                                <p class="text-muted">Visualiza las materias inscritas este semestre.</p>
-                                <a href="#" class="btn btn-success w-100">Ver materias</a>
-                            </div>
-                        </div>
-
-                        <div class="col-md-4 mb-4">
-                            <div class="p-4 shadow rounded bg-light">
-                                <h5 class="fw-bold text-danger">Perfil</h5>
-                                <p class="text-muted">Consulta o edita tus datos personales.</p>
-                                <a href="#" class="btn btn-danger w-100">Ver perfil</a>
-                            </div>
-                        </div>
-
+        {{-- Progreso General --}}
+        <div class="col-md-4">
+            <a href="{{ route('alumno.progreso') }}" class="text-decoration-none">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-chart-line fa-2x mb-2"></i>
+                        <h5 class="card-title">Progreso</h5>
+                        <p class="card-text">Consulta tu progreso académico</p>
                     </div>
-
                 </div>
-            </div>
-
+            </a>
         </div>
+
+        {{-- Horario --}}
+        <div class="col-md-4">
+            <a href="{{ route('alumno.horario.seleccion') }}" class="text-decoration-none">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-calendar-alt fa-2x mb-2"></i>
+                        <h5 class="card-title">Horario</h5>
+                        <p class="card-text">Selecciona o consulta tu horario</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {{-- Materias --}}
+        <div class="col-md-4">
+            <a href="{{ route('alumno.materias') }}" class="text-decoration-none">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <i class="fas fa-book fa-2x mb-2"></i>
+                        <h5 class="card-title">Materias</h5>
+                        <p class="card-text">Revisa las materias asignadas</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
     </div>
-
 </div>
-
 @endsection
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
