@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@extends('components.layouts.base')
 
 @section('title', 'Lista de Alumnos')
 
