@@ -1,9 +1,9 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Gestión de Horarios')
 
 @section('content')
-<div class="container mt-4" x-data="horariosApp()"> 
+<div class="container mt-4" x-data="horariosApp()">
 
     {{-- 1. Barra de Herramientas y Filtros --}}
     <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 border-bottom pb-3">
@@ -70,7 +70,7 @@
     </ul>
 
     <div class="tab-content" id="myTabContent">
-        
+
         {{-- VISTA 1: GRID SEMANAL (Visual) --}}
         <div class="tab-pane fade show active" id="grafica" role="tabpanel">
             <div class="card shadow-sm border-0">
@@ -130,7 +130,7 @@
                                         Aula 202
                                     </td>
                                 </tr>
-                                
+
                                 {{-- Más horas... --}}
                                 <tr>
                                     <td class="fw-bold bg-light text-muted">09:00 - 10:00</td>
@@ -210,7 +210,7 @@
                             <option>Programación I (6 Créditos)</option>
                         </select>
                     </div>
-                    
+
                     <div class="row g-2 mb-3">
                         <div class="col-md-6">
                             <label class="form-label small text-muted">Día</label>
@@ -240,7 +240,7 @@
                             <input type="time" class="form-control" value="09:00">
                         </div>
                     </div>
-                    
+
                     <div class="alert alert-warning small d-flex align-items-center">
                         <i class="bi bi-exclamation-circle me-2"></i>
                         El maestro Juan Pérez tiene clase en otro grupo a esta hora.

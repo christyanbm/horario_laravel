@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Reportes Académicos')
 
 @section('content')
@@ -21,7 +21,7 @@
     </div>
 
     <div class="row g-4">
-        
+
         {{-- 2. Resumen por Carrera (Ahora arriba para lectura rápida) --}}
         <div class="col-12">
             <div class="card shadow-sm border-0">
@@ -52,8 +52,8 @@
                                         <td class="pe-4">
                                             {{-- Barra de progreso visual basada en el promedio (CSS puro) --}}
                                             <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar {{ $promedioPorCarrera[$index] >= 80 ? 'bg-success' : 'bg-warning' }}" 
-                                                     role="progressbar" 
+                                                <div class="progress-bar {{ $promedioPorCarrera[$index] >= 80 ? 'bg-success' : 'bg-warning' }}"
+                                                     role="progressbar"
                                                      style="width: {{ $promedioPorCarrera[$index] }}%">
                                                 </div>
                                             </div>
@@ -95,13 +95,13 @@
                                         $esRiesgo = $alumno->promedio < 70;
                                         $esAlertaAsist = $alumno->inasistencias > 10;
                                     @endphp
-                                    
+
                                     <tr>
                                         <td class="ps-4">
                                             <span class="fw-bold text-dark">{{ $alumno->name }}</span>
                                         </td>
                                         <td class="small text-muted">{{ $alumno->carrera }}</td>
-                                        
+
                                         {{-- Inasistencias con alerta visual --}}
                                         <td class="text-center">
                                             @if($esAlertaAsist)

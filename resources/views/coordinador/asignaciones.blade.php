@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Gestión de Carga Académica')
 
 @section('content')
@@ -59,7 +59,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+
                         {{-- CASO 1: Asignación Correcta --}}
                         <tr>
                             <td class="ps-4">
@@ -146,7 +146,7 @@
                         <label class="form-label text-muted small fw-bold">Materia y Grupo</label>
                         <input type="text" class="form-control bg-light" id="inputMateria" value="Física I - Grupo A" readonly>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Seleccionar Docente</label>
                         <select class="form-select" id="selectDocente">
@@ -187,7 +187,7 @@
         const modal = new bootstrap.Modal(document.getElementById('modalAsignacion'));
         const titulo = document.getElementById('modalTitle');
         const inputMateria = document.getElementById('inputMateria');
-        
+
         if (accion === 'nuevo') {
             titulo.innerText = "Nueva Asignación";
             inputMateria.readOnly = false;
@@ -202,7 +202,7 @@
             inputMateria.value = materia + " - Grupo A";
             inputMateria.readOnly = true;
         }
-        
+
         modal.show();
     }
 
@@ -210,16 +210,16 @@
     function guardarAsignacion() {
         const btnText = document.getElementById('btnText');
         const original = btnText.innerText;
-        
+
         // Efecto de carga
         btnText.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
-        
+
         setTimeout(() => {
             // Cerrar modal y mostrar alerta (simulado)
             const modalEl = document.getElementById('modalAsignacion');
             const modal = bootstrap.Modal.getInstance(modalEl);
             modal.hide();
-            
+
             btnText.innerText = original;
             alert("Asignación guardada correctamente (Prototipo)");
         }, 1000);

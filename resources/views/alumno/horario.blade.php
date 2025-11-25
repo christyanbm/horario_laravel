@@ -1,10 +1,10 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Inscripción de Horario')
 
 @section('content')
 <div class="container mt-4">
-    
+
     {{-- 1. Encabezado con información del Alumno --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>

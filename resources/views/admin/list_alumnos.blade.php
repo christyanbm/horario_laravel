@@ -1,6 +1,5 @@
 @extends('layouts.app')
-@extends('components.layouts.base')
-
+@extends('partials.menu')
 @section('title', 'Lista de Alumnos')
 
 @section('content')

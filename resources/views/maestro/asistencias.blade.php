@@ -1,9 +1,9 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Control de Asistencia')
 
 @section('content')
-<div class="container mt-4" x-data="asistenciaApp()"> 
+<div class="container mt-4" x-data="asistenciaApp()">
     {{-- x-data sugiere AlpineJS, pero usaré JS Vanilla abajo para compatibilidad --}}
 
     {{-- 1. Encabezado de la Clase --}}
@@ -22,12 +22,12 @@
 
     <form action="#" method="POST">
         @csrf
-        
+
         <div class="row">
             {{-- 2. Panel Principal --}}
             <div class="col-lg-9">
                 <div class="card shadow-sm border-0">
-                    
+
                     {{-- Barra de Herramientas --}}
                     <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                         <h5 class="mb-0 text-secondary">Lista de Estudiantes</h5>
@@ -72,7 +72,7 @@
                                         <td class="text-center">
                                             {{-- Grupo de Botones (Radio Buttons estilizados) --}}
                                             <div class="btn-group" role="group" aria-label="Asistencia {{ $alumno['id'] }}">
-                                                
+
                                                 {{-- Opción: Presente --}}
                                                 <input type="radio" class="btn-check radio-asistencia" name="asistencia[{{ $alumno['id'] }}]" id="btn-p-{{ $alumno['id'] }}" value="P" checked onclick="actualizarContadores()">
                                                 <label class="btn btn-outline-success" for="btn-p-{{ $alumno['id'] }}">
@@ -141,7 +141,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="alert alert-info mt-3 mb-0 small">
                             <i class="bi bi-info-circle"></i> Recuerda guardar los cambios antes de salir.
                         </div>

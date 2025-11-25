@@ -1,9 +1,9 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Inscripción de Horario')
 
 @section('content')
-<div class="container mt-4" x-data="inscripcionApp()"> 
+<div class="container mt-4" x-data="inscripcionApp()">
     {{-- Nota: x-data sugiere Alpine.js, pero usaré JS nativo abajo para que funcione sin dependencias extra --}}
 
     {{-- 1. Encabezado --}}
@@ -33,7 +33,7 @@
     <div class="row">
         {{-- 2. Columna Principal --}}
         <div class="col-lg-8">
-            
+
             {{-- Pestañas de Navegación --}}
             <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -49,7 +49,7 @@
             </ul>
 
             <div class="tab-content" id="myTabContent">
-                
+
                 {{-- TAB 1: Lista de Materias --}}
                 <div class="tab-pane fade show active" id="lista" role="tabpanel">
                     <div class="card shadow-sm border-0">
@@ -129,7 +129,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                        
+
                                         {{-- Fila 3 --}}
                                         <tr id="row-3">
                                             <td>
@@ -221,7 +221,7 @@
                     <h5 class="mb-0"><i class="bi bi-cart3"></i> Resumen de Carga</h5>
                 </div>
                 <div class="card-body">
-                    
+
                     {{-- Barra de Créditos --}}
                     <div class="mb-4">
                         <div class="d-flex justify-content-between mb-1">
@@ -248,7 +248,7 @@
                             @csrf
                             {{-- Input oculto para enviar los IDs seleccionados --}}
                             <input type="hidden" name="materias_seleccionadas" id="inputMaterias">
-                            
+
                             <button type="button" class="btn btn-primary btn-lg w-100 shadow-sm" id="btnConfirmar" disabled>
                                 Confirmar Horario
                             </button>
@@ -278,7 +278,7 @@
             }
             seleccionadas.push({id, creditos, nombre});
             creditosTotales += creditos;
-            
+
             // Estilos botón
             btn.classList.remove('btn-outline-primary');
             btn.classList.add('btn-danger');

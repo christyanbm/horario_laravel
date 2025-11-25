@@ -1,10 +1,10 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Prototipo Calificaciones')
 
 @section('content')
 <div class="container mt-4">
-    
+
     {{-- Encabezado --}}
     <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
         <div>
@@ -19,7 +19,7 @@
     </div>
 
     <div class="card shadow-sm border-0">
-        
+
         {{-- Barra Superior --}}
         <div class="card-header bg-light py-3 d-flex justify-content-between align-items-center">
             <span class="fw-bold text-secondary">Listado de Alumnos (3)</span>
@@ -41,7 +41,7 @@
                         </tr>
                     </thead>
                     <tbody id="tablaAlumnos">
-                        
+
                         {{-- ALUMNO 1 (Hardcoded para prototipo) --}}
                         <tr>
                             <td class="text-center fw-bold text-muted">1</td>
@@ -52,7 +52,7 @@
                             <td class="text-center text-success">95%</td>
                             <td class="p-2">
                                 <div class="input-group input-group-sm">
-                                    <input type="number" class="form-control text-center fw-bold input-nota" 
+                                    <input type="number" class="form-control text-center fw-bold input-nota"
                                            min="0" max="100" placeholder="-" oninput="simularValidacion(this)">
                                     <span class="input-group-text status-icon"><i class="bi bi-dash-circle text-muted"></i></span>
                                 </div>
@@ -69,7 +69,7 @@
                             <td class="text-center text-success">100%</td>
                             <td class="p-2">
                                 <div class="input-group input-group-sm">
-                                    <input type="number" class="form-control text-center fw-bold input-nota" 
+                                    <input type="number" class="form-control text-center fw-bold input-nota"
                                            min="0" max="100" placeholder="-" value="95" oninput="simularValidacion(this)">
                                     <span class="input-group-text status-icon"><i class="bi bi-dash-circle text-muted"></i></span>
                                 </div>
@@ -87,7 +87,7 @@
                             <td class="text-center text-danger fw-bold">60%</td>
                             <td class="p-2">
                                 <div class="input-group input-group-sm">
-                                    <input type="number" class="form-control text-center fw-bold input-nota" 
+                                    <input type="number" class="form-control text-center fw-bold input-nota"
                                            min="0" max="100" placeholder="-" value="50" oninput="simularValidacion(this)">
                                     <span class="input-group-text status-icon"><i class="bi bi-dash-circle text-muted"></i></span>
                                 </div>
@@ -119,7 +119,7 @@
             </div>
         </div>
     </div>
-    
+
     {{-- Alerta Fake (Oculta por defecto) --}}
     <div class="alert alert-success fixed-bottom m-4 shadow-lg" id="alertaExito" style="display: none; max-width: 400px;">
         <i class="bi bi-check-circle-fill me-2"></i> <strong>¡Éxito!</strong> Calificaciones guardadas correctamente.
@@ -138,7 +138,7 @@
     function simularValidacion(input) {
         const val = parseInt(input.value);
         const icon = input.nextElementSibling;
-        
+
         input.classList.remove('text-danger', 'text-success', 'bg-danger', 'bg-success');
         input.style.backgroundColor = "";
 
@@ -170,7 +170,7 @@
         setTimeout(() => {
             btn.innerHTML = originalText;
             btn.disabled = false;
-            
+
             // Mostrar alerta flotante
             const alerta = document.getElementById('alertaExito');
             alerta.style.display = 'block';

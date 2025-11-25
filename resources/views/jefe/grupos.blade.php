@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Gestión de Grupos')
 
 @section('content')
@@ -63,7 +63,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+
                         {{-- Grupo 1: Normal --}}
                         <tr>
                             <td class="ps-4">
@@ -188,7 +188,7 @@
                             <input type="number" class="form-control" value="40">
                         </div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Carrera y Semestre</label>
                         <select class="form-select mb-2">

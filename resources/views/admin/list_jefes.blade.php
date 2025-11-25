@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Lista de Jefes de Carrera')
 
 @section('content')
