@@ -7,12 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Bienvenido, {{ Auth::user()->name }}</h2>
 
-        <form action="{{ route('logout') }}" method="POST" class="m-0">
-            @csrf
-            <button type="submit" class="btn btn-outline-danger">
-                Cerrar sesión
-            </button>
-        </form>
+
     </div>
 
     <div class="row g-4">
