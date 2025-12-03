@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('content')
 <div class="container">
     <h1 class="mb-4">Lista de Grupos</h1>
@@ -17,7 +17,7 @@
             <tr>
                 <th>Nombre</th>
                 <th>Cupo</th>
-               
+
                 <th>Materia</th>
                 <th>Horario</th>
                 <th>Maestro</th>

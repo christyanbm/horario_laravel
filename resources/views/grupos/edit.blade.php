@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('content')
 <div class="container">
     <h1 class="mb-4">Editar Grupo</h1>

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Lista de Alumnos')
 
 @section('content')
@@ -30,10 +30,10 @@
                     <td>{{ $alumno->name }}</td>
                     <td>{{ $alumno->email }}</td>
                     <td>
-                        <a href="{{ route('admin.usuarios.edit', $alumno->id) }}" 
+                        <a href="{{ route('admin.usuarios.edit', $alumno->id) }}"
                            class="btn btn-sm btn-primary">Editar</a>
 
-                        <form action="{{ route('admin.usuarios.destroy', $alumno->id) }}" 
+                        <form action="{{ route('admin.usuarios.destroy', $alumno->id) }}"
                               method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')

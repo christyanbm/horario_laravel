@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Editar Alumno')
 
 @section('content')
@@ -29,7 +29,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Actualizar</button>
-        
+
         {{-- REGRESAR SOLO A LA VISTA JEFE --}}
         <a href="{{ route('jefe.alumnos.index') }}" class="btn btn-secondary">
             Cancelar

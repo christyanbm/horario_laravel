@@ -46,7 +46,7 @@
                                 <select name="maestro_id[{{ $grupo->id }}]" class="form-select">
                                     <option value="">-- Seleccionar maestro --</option>
                                     @foreach($maestros as $maestro)
-                                        <option 
+                                        <option
                                             value="{{ $maestro->id }}"
                                             @if($grupo->maestro_id == $maestro->id) selected @endif
                                         >

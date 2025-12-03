@@ -51,35 +51,73 @@
                     </li>
                 @endif
                 {{-- Alumno --}}
-    @if (auth()->check() && auth()->user()->hasRole('alumno'))
-        <li class="nav-item px-1">
-            <a class="nav-link {{ request()->routeIs('alumno.dashboard') ? 'active' : '' }}" href="{{ route('alumno.dashboard') }}">
-                Dashboard
-            </a>
-        </li>
-        <li class="nav-item px-1">
-            <a class="nav-link {{ request()->routeIs('alumno.horario.seleccion') ? 'active' : '' }}" href="{{ route('alumno.horario.seleccion') }}">
-                Selección de Horario
-            </a>
-        </li>
-        <li class="nav-item px-1">
-            <a class="nav-link {{ request()->routeIs('alumno.progreso') ? 'active' : '' }}" href="{{ route('alumno.progreso') }}">
-                Progreso
-            </a>
-        </li>
-        <li class="nav-item px-1">
-            <a class="nav-link {{ request()->routeIs('alumno.materias') ? 'active' : '' }}" href="{{ route('alumno.materias') }}">
-                Mis Materias
-            </a>
-        </li>
-    @endif
-    {{-- Fin Alumno --}}
+                @if (auth()->check() && auth()->user()->hasRole('alumno'))
+                    <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('alumno.dashboard') ? 'active' : '' }}"
+                            href="{{ route('alumno.dashboard') }}">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('alumno.horario.seleccion') ? 'active' : '' }}"
+                            href="{{ route('alumno.horario.seleccion') }}">
+                            Selección de Horario
+                        </a>
+                    </li>
+                    <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('alumno.progreso') ? 'active' : '' }}"
+                            href="{{ route('alumno.progreso') }}">
+                            Progreso
+                        </a>
+                    </li>
+                    <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('alumno.materias') ? 'active' : '' }}"
+                            href="{{ route('alumno.materias') }}">
+                            Mis Materias
+                        </a>
+                    </li>
+                @endif
+                {{-- Fin Alumno --}}
 
                 {{-- Maestro --}}
-    @if (auth()->check() && auth()->user()->hasRole('maestro'))
+                @if (auth()->check() && auth()->user()->hasRole('maestro'))
+                    <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('maestro.dashboard') ? 'active' : '' }}"
+                            href="{{ route('maestro.dashboard') }}">
+                            Dashboard Maestro
+                        </a>
+                    </li>
+                @endif
+                {{-- Fin Maestro --}}
+                {{-- Jefe de Departamento --}}
+                @if (auth()->check() && auth()->user()->hasRole('jefe'))
+                    <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('jefe.grupos') ? 'active' : '' }}"
+                            href="{{ route('jefe.dashboard') }}">
+                            Gestion de Grupos
+                        </a>
+                    </li>
+                    <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('jefe.reportes') ? 'active' : '' }}"
+                            href="{{ route('jefe.reportes') }}">
+                            Reportes Académicos
+                        </a>
+                    </li>
+                @endif
+                {{-- Fin Jefe de Departamento --}}
+                {{-- Coordinador --}}
+                @if (auth()->check() && auth()->user()->hasRole('coordinador'))
+                    <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('coordinador.dashboard') ? 'active' : '' }}"
+                            href="{{ route('coordinador.dashboard') }}">
+                            Dashboard Coordinador
+                        </a>
+                    </li>
+                @endif
+                {{-- Fin Coordinador --}}
 
-    @endif
-</ul>
+
+            </ul>
             </ul>
 
             @if (auth()->check())
