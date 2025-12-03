@@ -73,6 +73,12 @@
             </a>
         </li>
     @endif
+    {{-- Fin Alumno --}}
+
+                {{-- Maestro --}}
+    @if (auth()->check() && auth()->user()->hasRole('maestro'))
+
+    @endif
 </ul>
             </ul>
 

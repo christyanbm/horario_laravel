@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             MateriasSeeder::class, // ← Aquí llamamos a tu seeder correctamente
              GrupoSeeder::class,
+            roleSeeder::class,
+
         ]);
 
         // Usuario extra de prueba
