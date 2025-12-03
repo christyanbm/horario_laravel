@@ -41,7 +41,8 @@
                                 <tr>
                                     <td>{{ $grupo->materia->nombre }}</td>
                                     <td class="text-center">{{ $grupo->materia->creditos }}</td>
-                                    <td>{{ $grupo->maestro->nombre ?? 'Sin asignar' }}</td>
+                                   <td>{{ $grupo->maestro->name ?? 'Sin asignar' }}</td>
+
                                     <td>{{ $grupo->dia }} {{ $grupo->hora_inicio }} - {{ $grupo->hora_fin }}</td>
                                 </tr>
                             @endforeach

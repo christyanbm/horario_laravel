@@ -55,7 +55,6 @@ class GrupoController extends Controller
             'nombre' => 'required|string|max:255',
             'cupo_max' => 'required|integer',
 
-            // ❌ ELIMINADO: 'carrera'
             
             'hora_inicio' => 'required|date_format:H:i',
             'hora_fin' => 'required|date_format:H:i|after:hora_inicio',
