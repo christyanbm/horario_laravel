@@ -1,30 +1,29 @@
 @extends('layouts.app')
-@extends('partials.menu')
+@include('partials.menu')
+
 @section('title', 'Inscripción de Horario')
 
 @section('content')
 <div class="container mt-4">
 
-    {{-- 1. Encabezado con información del Alumno --}}
+    {{-- 1. Encabezado --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-primary">Selección de Horario</h2>
             <p class="text-muted">Bienvenido. Selecciona las materias para tu próximo ciclo.</p>
         </div>
-        {{-- Botón opcional para ver el horario ya guardado --}}
         <a href="#" class="btn btn-outline-secondary">
             <i class="bi bi-calendar-check"></i> Ver Mi Horario Actual
         </a>
     </div>
 
-    {{-- 2. Mensajes de Feedback (Éxito o Error) --}}
+    {{-- 2. Mensajes de Feedback --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
-
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ session('error') }}
@@ -33,30 +32,15 @@
     @endif
 
     <div class="row">
-        {{-- 3. Columna Principal: Lista de Materias Disponibles --}}
+        {{-- 3. Lista de Materias --}}
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-white py-3">
                     <h5 class="mb-0">Materias Disponibles</h5>
                 </div>
                 <div class="card-body">
-                    {{-- Filtro simple (opcional) --}}
-                    <form action="" method="GET" class="row g-3 mb-3">
-                        <div class="col-auto">
-                            <select class="form-select" aria-label="Filtrar por semestre">
-                                <option selected>Todos los semestres</option>
-                                <option value="1">1er Semestre</option>
-                                <option value="2">2do Semestre</option>
-                            </select>
-                        </div>
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-primary mb-3">Filtrar</button>
-                        </div>
-                    </form>
-
-                    {{-- Tabla de Materias --}}
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle">
+                        <table class="table table-hover align-middle" id="materiasTable">
                             <thead class="table-light">
                                 <tr>
                                     <th>Materia</th>
@@ -67,39 +51,35 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- EJEMPLO: Aquí iterarías tus datos reales con @foreach($materias as $materia) --}}
-                                <tr>
-                                    <td>
-                                        <span class="fw-bold">Matemáticas Discretas</span><br>
-                                        <small class="text-muted">Grupo A</small>
-                                    </td>
-                                    <td>Ing. Juan Pérez</td>
-                                    <td>Lun/Mie 08:00 - 10:00</td>
-                                    <td><span class="badge bg-success">5 Disp.</span></td>
-                                    <td class="text-end">
-                                        <form action="#" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-primary">
-                                                + Agregar
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span class="fw-bold">Programación I</span><br>
-                                        <small class="text-muted">Grupo B</small>
-                                    </td>
-                                    <td>Lic. Ana López</td>
-                                    <td>Mar/Jue 10:00 - 12:00</td>
-                                    <td><span class="badge bg-danger">Lleno</span></td>
-                                    <td class="text-end">
-                                        <button class="btn btn-sm btn-secondary" disabled>
-                                            No disponible
-                                        </button>
-                                    </td>
-                                </tr>
-                                {{-- Fin del ejemplo --}}
+                                @foreach($grupos as $grupo)
+                                    @if($grupo->materia) {{-- Asegurarnos de que exista la materia --}}
+                                    <tr id="row-{{ $grupo->id }}">
+                                        <td>
+                                            <span class="fw-bold">{{ $grupo->materia->nombre }}</span><br>
+                                            <small class="text-muted">{{ $grupo->nombre }}</small>
+                                        </td>
+                                        <td>{{ $grupo->maestro->nombre ?? 'Sin asignar' }}</td>
+                                        <td>{{ $grupo->hora_inicio->format('H:i') }} - {{ $grupo->hora_fin->format('H:i') }}</td>
+                                        <td>
+                                            @if($grupo->cupoDisponible > 0)
+                                                <span class="badge bg-success">{{ $grupo->cupoDisponible }} Disp.</span>
+                                            @else
+                                                <span class="badge bg-danger">Lleno</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-end">
+                                            @if($grupo->cupoDisponible > 0)
+                                                <button class="btn btn-outline-primary btn-sm btn-select"
+                                                    onclick="toggleMateria({{ $grupo->id }}, {{ $grupo->materia->creditos }}, '{{ $grupo->materia->nombre }}')">
+                                                    <i class="bi bi-plus-lg"></i> Agregar
+                                                </button>
+                                            @else
+                                                <button class="btn btn-secondary btn-sm" disabled>No disponible</button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endif
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -107,29 +87,118 @@
             </div>
         </div>
 
-        {{-- 4. Columna Lateral: Resumen de Carga --}}
+        {{-- 4. Barra Lateral --}}
         <div class="col-md-4">
             <div class="card shadow-sm sticky-top" style="top: 20px;">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Tu Carga Académica</h5>
                 </div>
                 <div class="card-body">
-                    <ul class="list-group list-group-flush mb-3">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Créditos Seleccionados
-                            <span class="badge bg-primary rounded-pill">15</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            Materias
-                            <span class="badge bg-primary rounded-pill">3</span>
+                    {{-- Lista de materias seleccionadas --}}
+                    <ul class="list-group list-group-flush mb-3" id="listaSeleccionados">
+                        <li class="list-group-item text-center text-muted small fst-italic" id="emptyState">
+                            No has seleccionado materias aún.
                         </li>
                     </ul>
-                    <div class="d-grid">
-                        <button class="btn btn-success btn-lg">Confirmar Horario</button>
+
+                    {{-- Créditos --}}
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small fw-bold">Créditos Seleccionados</span>
+                            <span class="small" id="creditCounter">0 / 30 Máx</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-success" id="creditBar" role="progressbar" style="width: 0%"></div>
+                        </div>
                     </div>
+
+                    {{-- Botón Confirmar --}}
+                    <form action="{{ route('alumno.inscribirse') }}" method="POST" id="formInscripcion">
+                        @csrf
+                        <input type="hidden" name="materias_seleccionadas" id="inputMaterias">
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg" id="btnConfirmar" disabled>
+                                Confirmar Horario
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+{{-- SCRIPT --}}
+<script>
+    let seleccionadas = [];
+    let creditosTotales = 0;
+    const maxCreditos = 30;
+
+    function toggleMateria(id, creditos, nombre) {
+        const index = seleccionadas.findIndex(m => m.id === id);
+        const btn = document.querySelector(`#row-${id} .btn-select`);
+
+        if (index === -1) {
+            if (creditosTotales + creditos > maxCreditos) {
+                alert("¡Excedes el límite de créditos!");
+                return;
+            }
+            seleccionadas.push({id, creditos, nombre});
+            creditosTotales += creditos;
+
+            btn.classList.remove('btn-outline-primary');
+            btn.classList.add('btn-danger');
+            btn.innerHTML = '<i class="bi bi-trash"></i> Quitar';
+            document.getElementById(`row-${id}`).classList.add('table-primary');
+        } else {
+            seleccionadas.splice(index, 1);
+            creditosTotales -= creditos;
+
+            btn.classList.remove('btn-danger');
+            btn.classList.add('btn-outline-primary');
+            btn.innerHTML = '<i class="bi bi-plus-lg"></i> Agregar';
+            document.getElementById(`row-${id}`).classList.remove('table-primary');
+        }
+
+        updateSidebar();
+    }
+
+    function updateSidebar() {
+        const list = document.getElementById('listaSeleccionados');
+        const emptyState = document.getElementById('emptyState');
+        const creditCounter = document.getElementById('creditCounter');
+        const creditBar = document.getElementById('creditBar');
+        const btnConfirmar = document.getElementById('btnConfirmar');
+
+        creditCounter.innerText = `${creditosTotales} / ${maxCreditos} Máx`;
+        creditBar.style.width = `${(creditosTotales / maxCreditos) * 100}%`;
+
+        if (seleccionadas.length === 0) {
+            list.innerHTML = '';
+            list.appendChild(emptyState);
+            emptyState.style.display = 'block';
+            btnConfirmar.disabled = true;
+        } else {
+            emptyState.style.display = 'none';
+            list.innerHTML = '';
+            seleccionadas.forEach(m => {
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center small';
+                li.innerHTML = `${m.nombre}<span class="badge bg-secondary rounded-pill">${m.creditos} Cr.</span>`;
+                list.appendChild(li);
+            });
+            btnConfirmar.disabled = false;
+        }
+    }
+
+    document.getElementById('formInscripcion').addEventListener('submit', function(e) {
+        const ids = seleccionadas.map(m => m.id);
+        document.getElementById('inputMaterias').value = JSON.stringify(ids);
+    });
+</script>
+
+<style>
+    .table-hover tbody tr:hover { background-color: rgba(13, 110, 253, 0.05); }
+    .table-primary { background-color: rgba(13, 110, 253, 0.15) !important; }
+</style>
 @endsection

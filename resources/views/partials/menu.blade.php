@@ -50,6 +50,30 @@
                         </a>
                     </li>
                 @endif
+                {{-- Alumno --}}
+    @if (auth()->check() && auth()->user()->hasRole('alumno'))
+        <li class="nav-item px-1">
+            <a class="nav-link {{ request()->routeIs('alumno.dashboard') ? 'active' : '' }}" href="{{ route('alumno.dashboard') }}">
+                Dashboard
+            </a>
+        </li>
+        <li class="nav-item px-1">
+            <a class="nav-link {{ request()->routeIs('alumno.horario.seleccion') ? 'active' : '' }}" href="{{ route('alumno.horario.seleccion') }}">
+                Selección de Horario
+            </a>
+        </li>
+        <li class="nav-item px-1">
+            <a class="nav-link {{ request()->routeIs('alumno.progreso') ? 'active' : '' }}" href="{{ route('alumno.progreso') }}">
+                Progreso
+            </a>
+        </li>
+        <li class="nav-item px-1">
+            <a class="nav-link {{ request()->routeIs('alumno.materias') ? 'active' : '' }}" href="{{ route('alumno.materias') }}">
+                Mis Materias
+            </a>
+        </li>
+    @endif
+</ul>
             </ul>
 
             @if (auth()->check())

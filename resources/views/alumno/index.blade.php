@@ -1,13 +1,16 @@
+{{-- resources/views/alumno/index.blade.php --}}
+
 @extends('layouts.app')
-@extends('partials.menu')
+
+{{-- Incluir menú --}}
+@include('partials.menu')
+
 @section('title', 'Dashboard Alumno')
 
 @section('content')
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="mb-0">Bienvenido, {{ Auth::user()->name }}</h2>
-
-
     </div>
 
     <div class="row g-4">
