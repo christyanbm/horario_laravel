@@ -206,29 +206,34 @@ class JefeController extends Controller
     //   ASIGNAR MAESTRO A GRUPO
     // ========================
 
-    public function asignarMaestroForm()
-    {
-        $grupos = Grupo::with('materia')
-                       ->whereNull('maestro_id')
-                       ->get();
+   public function asignarMaestroForm()
+{
+    // Trae todos los grupos con su materia y maestro asignado (si lo hay)
+    $grupos = Grupo::with(['materia', 'maestro'])->get();
 
-        $maestros = User::role('maestro')->get();
+    // Trae todos los maestros
+    $maestros = User::role('maestro')->get();
 
-        return view('jefe.grupos.asignar', compact('grupos', 'maestros'));
+    return view('jefe.asignaciones', compact('grupos', 'maestros'));
+}
+
+public function asignarMaestroStore(Request $request)
+{
+    $request->validate([
+        'maestro_id' => 'required|array', // debe ser un array de maestro_id por grupo
+        'maestro_id.*' => 'nullable|exists:users,id',
+    ]);
+
+    foreach ($request->maestro_id as $grupoId => $maestroId) {
+        $grupo = Grupo::find($grupoId);
+        if ($grupo) {
+            $grupo->maestro_id = $maestroId; // puede ser null para desasignar
+            $grupo->save();
+        }
     }
 
-    public function asignarMaestroStore(Request $request)
-    {
-        $request->validate([
-            'grupo_id'   => 'required|exists:grupos,id',
-            'maestro_id' => 'required|exists:users,id',
-        ]);
+    return redirect()->route('jefe.asignaciones')
+                     ->with('success', 'Asignaciones de maestros actualizadas correctamente.');
+}
 
-        $grupo = Grupo::findOrFail($request->grupo_id);
-        $grupo->maestro_id = $request->maestro_id;
-        $grupo->save();
-
-        return redirect()->route('jefe.grupos')
-                         ->with('success', 'Maestro asignado correctamente.');
-    }
 }

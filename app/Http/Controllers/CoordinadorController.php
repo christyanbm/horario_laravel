@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
+use App\Models\Grupo;
+use App\Models\Materia;
 class CoordinadorController extends Controller
 {
     public function index()
@@ -18,13 +19,9 @@ class CoordinadorController extends Controller
         return view('coordinador.horarios');
     }
 
-  public function asignaciones()
+   public function asignaciones()
 {
-    $grupos = \App\Models\Grupo::with('materia', 'maestro')->get();
-    $maestros = User::role('maestro')->get();
-    $materias = \App\Models\Materia::all();
-
-    return view('coordinador.asignaciones', compact('grupos', 'maestros', 'materias'));
+    return redirect()->route('coordinador.alumnos.create');
 }
 
 
@@ -112,21 +109,98 @@ class CoordinadorController extends Controller
             ->route('coordinador.alumnos.index')
             ->with('success', 'Alumno eliminado correctamente.');
     }
-  public function asignacionesGuardar(Request $request)
-{
-    $data = $request->maestro_id; // array: [grupo_id => maestro_id]
+  // =========================================
+//   GRUPOS (COORDINADOR)
+// =========================================
 
-    foreach ($data as $grupoId => $maestroId) {
-        if (!empty($maestroId)) {
-            \App\Models\Grupo::where('id', $grupoId)->update([
-                'maestro_id' => $maestroId
-            ]);
-        }
-    }
+/** LISTAR GRUPOS */
+public function gruposIndex()
+{
+    $grupos = Grupo::with('materia', 'maestro')->get();
+    return view('coordinador.grupos.index', compact('grupos'));
+}
+
+/** FORMULARIO CREAR GRUPO */
+public function gruposCreate()
+{
+    $materias = Materia::all();
+    $maestros = User::role('maestro')->get();
+    return view('coordinador.grupos.create', compact('materias', 'maestros'));
+}
+
+/** GUARDAR GRUPO */
+public function gruposStore(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'cupo_max' => 'required|integer|min:1',
+        'materia_id' => 'required|exists:materias,id',
+        'hora_inicio' => 'required',
+        'hora_fin' => 'required',
+        'maestro_id' => 'nullable|exists:users,id',
+    ]);
+
+    Grupo::create([
+        'nombre' => $request->nombre,
+        'cupo_max' => $request->cupo_max,
+        'materia_id' => $request->materia_id,
+        'hora_inicio' => $request->hora_inicio,
+        'hora_fin' => $request->hora_fin,
+        'maestro_id' => $request->maestro_id,
+    ]);
 
     return redirect()
-        ->route('coordinador.asignaciones')
-        ->with('success', 'Asignaciones guardadas correctamente.');
+        ->route('coordinador.grupos.index')
+        ->with('success', 'Grupo creado correctamente.');
+}
+
+/** FORMULARIO EDITAR GRUPO */
+public function gruposEdit($id)
+{
+    $grupo = Grupo::findOrFail($id);
+    $materias = Materia::all();
+    $maestros = User::role('maestro')->get();
+
+    return view('coordinador.grupos.edit', compact('grupo', 'materias', 'maestros'));
+}
+
+/** ACTUALIZAR GRUPO */
+public function gruposUpdate(Request $request, $id)
+{
+    $grupo = Grupo::findOrFail($id);
+
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'cupo_max' => 'required|integer|min:1',
+        'materia_id' => 'required|exists:materias,id',
+        'hora_inicio' => 'required',
+        'hora_fin' => 'required',
+        'maestro_id' => 'nullable|exists:users,id',
+    ]);
+
+    $grupo->update([
+        'nombre' => $request->nombre,
+        'cupo_max' => $request->cupo_max,
+        'materia_id' => $request->materia_id,
+        'hora_inicio' => $request->hora_inicio,
+        'hora_fin' => $request->hora_fin,
+        'maestro_id' => $request->maestro_id,
+    ]);
+
+    return redirect()
+        ->route('coordinador.grupos.index')
+        ->with('success', 'Grupo actualizado correctamente.');
+}
+
+/** ELIMINAR GRUPO */
+public function gruposDestroy($id)
+{
+    $grupo = Grupo::findOrFail($id);
+    $grupo->delete();
+
+    return redirect()
+        ->route('coordinador.grupos.index')
+        ->with('success', 'Grupo eliminado correctamente.');
 }
 
 }

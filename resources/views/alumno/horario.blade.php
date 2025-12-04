@@ -52,8 +52,8 @@
                             </thead>
                             <tbody>
                                 @foreach($grupos as $grupo)
-                                    @if($grupo->materia) {{-- Asegurarnos de que exista la materia --}}
-                                    <tr id="row-{{ $grupo->id }}">
+                                    @if($grupo->materia)
+                                    <tr id="row-{{ $grupo->id }}" data-selected="{{ in_array($grupo->id, $seleccionadosIds) ? '1' : '0' }}">
                                         <td>
                                             <span class="fw-bold">{{ $grupo->materia->nombre }}</span><br>
                                             <small class="text-muted">{{ $grupo->nombre }}</small>
@@ -68,7 +68,9 @@
                                             @endif
                                         </td>
                                         <td class="text-end">
-                                            @if($grupo->cupoDisponible > 0)
+                                            @if(in_array($grupo->id, $seleccionadosIds))
+                                                <button class="btn btn-secondary btn-sm" disabled>Ya inscrito</button>
+                                            @elseif($grupo->cupoDisponible > 0)
                                                 <button class="btn btn-outline-primary btn-sm btn-select"
                                                     onclick="toggleMateria({{ $grupo->id }}, {{ $grupo->materia->creditos }}, '{{ $grupo->materia->nombre }}')">
                                                     <i class="bi bi-plus-lg"></i> Agregar
@@ -200,5 +202,6 @@
 <style>
     .table-hover tbody tr:hover { background-color: rgba(13, 110, 253, 0.05); }
     .table-primary { background-color: rgba(13, 110, 253, 0.15) !important; }
+    tr[data-selected="1"] { background-color: rgba(220, 53, 69, 0.1); }
 </style>
 @endsection

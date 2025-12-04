@@ -50,4 +50,12 @@ class Grupo extends Model
     {
         return $this->cupo_max - $this->alumnos()->count();
     }
+    // Accesor para mostrar solo el horario
+public function getHorarioAttribute()
+{
+    $inicio = $this->hora_inicio ? $this->hora_inicio->format('H:i') : '';
+    $fin = $this->hora_fin ? $this->hora_fin->format('H:i') : '';
+    return $inicio . ' - ' . $fin;
+}
+
 }

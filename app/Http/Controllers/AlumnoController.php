@@ -35,13 +35,17 @@ class AlumnoController extends Controller
     /**
      * Selección de horario
      */
-    public function seleccionarHorario()
-    {
-        // Traemos todos los grupos con materia, maestro y alumnos inscritos
-        $grupos = Grupo::with(['materia', 'maestro', 'alumnos'])->get();
+ public function seleccionarHorario()
+{
+    $alumno = Auth::user();
 
-        return view('alumno.horario', compact('grupos'));
-    }
+    $grupos = Grupo::with(['materia', 'maestro', 'alumnos'])->get();
+
+    // IDs de los grupos ya seleccionados por el alumno
+    $seleccionadosIds = $alumno->grupos->pluck('id')->toArray();
+
+    return view('alumno.horario', compact('grupos', 'seleccionadosIds'));
+}
 
     /**
      * Progreso del alumno

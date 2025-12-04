@@ -25,8 +25,10 @@ class GrupoSeeder extends Seeder
             DB::table('grupos')->insert([
                 'nombre' => 'Grupo ' . strtoupper(mb_substr($materia->nombre, 0, 1, 'UTF-8')) . rand(1, 9),
                 'cupo_max' => rand(20, 40),
-                'carrera' => 'Ingeniería en Sistemas Computacionales',
-                
+
+               
+                // 'carrera' => 'Ingeniería en Sistemas Computacionales',
+
                 'hora_inicio' => '08:00',
                 'hora_fin'   => '10:00',
                 'materia_id' => $materia->id,

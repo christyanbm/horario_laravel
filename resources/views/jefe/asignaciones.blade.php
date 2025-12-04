@@ -18,11 +18,11 @@
 
             @if($grupos->isEmpty())
                 <div class="alert alert-info text-center">
-                    No hay grupos creados por el coordinador.
+                    No hay grupos creados.
                 </div>
             @else
 
-            <form action="{{ route('coordinador.asignar.guardar') }}" method="POST">
+            <form action="{{ route('jefe.asignaciones.guardar') }}" method="POST">
                 @csrf
 
                 <table class="table table-hover align-middle">
@@ -37,17 +37,13 @@
                         @foreach($grupos as $grupo)
                         <tr>
                             <td>{{ $grupo->nombre }}</td>
-
-                            <td>
-                                {{ $grupo->materia->nombre ?? 'Sin materia' }}
-                            </td>
-
+                            <td>{{ $grupo->materia->nombre ?? 'Sin materia' }}</td>
                             <td>
                                 <select name="maestro_id[{{ $grupo->id }}]" class="form-select">
                                     <option value="">-- Seleccionar maestro --</option>
                                     @foreach($maestros as $maestro)
-                                        <option
-                                            value="{{ $maestro->id }}"
+                                        <option 
+                                            value="{{ $maestro->id }}" 
                                             @if($grupo->maestro_id == $maestro->id) selected @endif
                                         >
                                             {{ $maestro->name }}
@@ -61,7 +57,6 @@
                 </table>
 
                 <button class="btn btn-primary mt-3">Guardar Asignaciones</button>
-
             </form>
             @endif
 

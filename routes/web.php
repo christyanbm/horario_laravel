@@ -72,10 +72,33 @@ Route::prefix('maestro')
     ->name('maestro.')
     ->group(function () {
 
-        Route::get('/dashboard', [MaestroController::class, 'index'])->name('dashboard');
-        Route::get('/asistencias', [MaestroController::class, 'asistencias'])->name('asistencias');
-        Route::get('/calificaciones-finales', [MaestroController::class, 'calificacionesFinales'])->name('calificaciones.finales');
-});
+        // Dashboard del maestro
+        Route::get('/dashboard', [MaestroController::class, 'index'])
+            ->name('dashboard');
+
+        // Horario del maestro
+        Route::get('/horario', [MaestroController::class, 'horario'])
+            ->name('horario');
+
+        // Listar los grupos del maestro (vista inicial de asistencias)
+        Route::get('/asistencias', [MaestroController::class, 'listarGrupos'])
+            ->name('asistencias');
+
+        // Registrar asistencias de un grupo en específico
+        Route::get('/asistencias/{grupo}', [MaestroController::class, 'asistencias'])
+            ->name('asistencias.grupo');
+
+        // Guardar asistencias (POST)
+        Route::post('/asistencias/registrar', [MaestroController::class, 'registrarAsistencias'])
+            ->name('asistencias.registrar');
+
+        // Calificaciones finales
+        Route::get('/calificaciones-finales', [MaestroController::class, 'calificacionesFinales'])
+            ->name('calificaciones.finales');
+    });
+
+
+
 
 // ===========================
 //  JEFE DE CARRERA
@@ -120,6 +143,14 @@ Route::get('/maestros/{id}/editar', [JefeController::class, 'maestrosEdit'])->na
 Route::put('/maestros/{id}', [JefeController::class, 'maestrosUpdate'])->name('maestros.update');
 Route::delete('/maestros/{id}', [JefeController::class, 'maestrosDestroy'])->name('maestros.destroy');
 
+// ================================
+//     ASIGNACIÓN DE MAESTROS (JEFE)
+// ================================
+// Mostrar formulario de asignación de maestros a grupos
+Route::get('/asignaciones', [JefeController::class, 'asignarMaestroForm'])->name('asignaciones');
+Route::post('/asignaciones/guardar', [JefeController::class, 'asignarMaestroStore'])->name('asignaciones.guardar');
+
+
 });
 
 
@@ -135,17 +166,26 @@ Route::prefix('coordinador')
     Route::get('/dashboard', [CoordinadorController::class, 'index'])->name('dashboard');
     Route::get('/horarios', [CoordinadorController::class, 'horarios'])->name('horarios');
     Route::get('/asignaciones', [CoordinadorController::class, 'asignaciones'])->name('asignaciones');
- // ==== CRUD ALUMNOS ====
+
+    // ==== CRUD ALUMNOS ====
     Route::get('/alumnos', [CoordinadorController::class, 'alumnosIndex'])->name('alumnos.index');
     Route::get('/alumnos/crear', [CoordinadorController::class, 'alumnosCreate'])->name('alumnos.create');
     Route::post('/alumnos', [CoordinadorController::class, 'alumnosStore'])->name('alumnos.store');
     Route::get('/alumnos/{id}/editar', [CoordinadorController::class, 'alumnosEdit'])->name('alumnos.edit');
     Route::put('/alumnos/{id}', [CoordinadorController::class, 'alumnosUpdate'])->name('alumnos.update');
     Route::delete('/alumnos/{id}', [CoordinadorController::class, 'alumnosDestroy'])->name('alumnos.destroy');
-    // Nueva ruta para guardar asignaciones
-    Route::post('/asignaciones/guardar', [CoordinadorController::class, 'asignacionesGuardar'])
-        ->name('asignar.guardar');
+    // ==== CRUD GRUPOS ====
+    Route::get('/grupos', [CoordinadorController::class, 'gruposIndex'])->name('grupos.index');
+    Route::get('/grupos/crear', [CoordinadorController::class, 'gruposCreate'])->name('grupos.create');
+    Route::post('/grupos', [CoordinadorController::class, 'gruposStore'])->name('grupos.store');
+    Route::get('/grupos/{id}/editar', [CoordinadorController::class, 'gruposEdit'])->name('grupos.edit');
+    Route::put('/grupos/{id}', [CoordinadorController::class, 'gruposUpdate'])->name('grupos.update');
+    Route::delete('/grupos/{id}', [CoordinadorController::class, 'gruposDestroy'])->name('grupos.destroy');
+
+    // Guardar asignaciones
+    Route::post('/asignaciones/guardar', [CoordinadorController::class, 'asignacionesGuardar'])->name('asignar.guardar');
 });
+
 
 //ADMIN
 Route::middleware(['auth', 'role:admin'])->group(function () {

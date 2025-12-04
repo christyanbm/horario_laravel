@@ -1,6 +1,6 @@
 @extends('layouts.app')
-@extends('partials.menu')
-@section('title', 'Dashboard Coordinador')
+
+
 
 @section('content')
 
@@ -25,22 +25,21 @@
                 </a>
             </div>
 
-            {{-- Asignaciones --}}
-            <div class="col-md-4">
-                <a href="{{ route('coordinador.asignaciones') }}" class="text-decoration-none">
-                    <div class="card card-option p-3">
-                        <i class="fa fa-folder fa-2x mb-2"></i>
-                        <h5>Asignaciones</h5>
-                    </div>
-                </a>
-            </div>
+    <div class="col-md-4">
+    <a href="{{ route('coordinador.alumnos.create') }}" class="text-decoration-none">
+        <div class="card card-option p-3">
+            <i class="fa fa-user-plus fa-2x mb-2"></i>
+            <h5>Crear Alumno</h5>
+        </div>
+    </a>
+</div>
 
-            {{-- Crear Alumno --}}
+            {{-- Grupos --}}
             <div class="col-md-4">
-                <a href="{{ route('coordinador.alumnos.create') }}" class="text-decoration-none">
+                <a href="{{ route('coordinador.grupos.index') }}" class="text-decoration-none">
                     <div class="card card-option p-3">
-                        <i class="fa fa-user-plus fa-2x mb-2"></i>
-                        <h5>Crear Alumno</h5>
+                        <i class="fa fa-users fa-2x mb-2"></i>
+                        <h5>Grupos</h5>
                     </div>
                 </a>
             </div>
