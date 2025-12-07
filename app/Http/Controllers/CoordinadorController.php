@@ -7,23 +7,46 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Grupo;
 use App\Models\Materia;
+use App\Models\HistorialAcademico;
 class CoordinadorController extends Controller
 {
     public function index()
     {
         return view('coordinador.index'); 
     }
+public function horarios()
+{
+    // Traer todos los grupos con su materia, maestro y alumnos
+    $grupos = Grupo::with(['materia', 'maestro', 'alumnos'])->get();
 
-    public function horarios()
-    {
-        return view('coordinador.horarios');
+    // Obtener todos los IDs de alumnos y materias para filtrar las calificaciones
+    $alumnoIds = $grupos->pluck('alumnos.*.id')->flatten()->unique();
+    $materiaIds = $grupos->pluck('materia_id')->unique();
+
+    // Traer calificaciones de esos alumnos en esas materias
+    $calificaciones = HistorialAcademico::whereIn('alumno_id', $alumnoIds)
+                        ->whereIn('materia_id', $materiaIds)
+                        ->get()
+                        ->keyBy(function($item) {
+                            return $item->alumno_id . '_' . $item->materia_id;
+                        });
+
+    // Asignar calificación a cada alumno de cada grupo
+    foreach ($grupos as $grupo) {
+        foreach ($grupo->alumnos as $alumno) {
+            $key = $alumno->id . '_' . $grupo->materia_id;
+            $alumno->calificacion = $calificaciones[$key]->calificacion ?? null;
+        }
     }
 
-   public function asignaciones()
-{
-    return redirect()->route('coordinador.alumnos.create');
+    // Opcional: para filtros
+    $materias = Materia::all();
+
+    return view('coordinador.horarios', compact('grupos', 'materias'));
 }
 
+
+   
 
     // =========================================
     //   ALUMNOS
@@ -201,6 +224,38 @@ public function gruposDestroy($id)
     return redirect()
         ->route('coordinador.grupos.index')
         ->with('success', 'Grupo eliminado correctamente.');
+}
+/** Mostrar alumnos de un grupo */
+public function alumnosGrupo($grupo_id)
+{
+    $grupo = Grupo::with('alumnos', 'materia')->findOrFail($grupo_id);
+    return view('coordinador.grupos.alumnos', compact('grupo'));
+}
+
+/** Agregar alumno a un grupo */
+public function agregarAlumno(Request $request, $grupo_id)
+{
+    $request->validate([
+        'alumno_id' => 'required|exists:users,id',
+    ]);
+
+    $grupo = Grupo::findOrFail($grupo_id);
+
+    if ($grupo->alumnos->contains($request->alumno_id)) {
+        return back()->with('warning', 'El alumno ya está en este grupo.');
+    }
+
+    $grupo->alumnos()->attach($request->alumno_id);
+    return back()->with('success', 'Alumno agregado correctamente.');
+}
+
+/** Eliminar alumno de un grupo */
+public function eliminarAlumno($grupo_id, $alumno_id)
+{
+    $grupo = Grupo::findOrFail($grupo_id);
+    $grupo->alumnos()->detach($alumno_id);
+
+    return back()->with('success', 'Alumno eliminado correctamente.');
 }
 
 }

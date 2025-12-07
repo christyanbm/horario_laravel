@@ -1,6 +1,6 @@
 @extends('layouts.app')
-
-@section('title', 'Editar Maestro')
+@extends('partials.menu')
+@section('title', 'Crear Maestro')
 
 @section('content')
 <div class="container mt-4">

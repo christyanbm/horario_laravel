@@ -8,7 +8,7 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\JefeController;
 use App\Http\Controllers\MaestroController;
 use App\Http\Controllers\CoordinadorController;
-
+use App\Http\Controllers\EvaluacionController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -60,8 +60,18 @@ Route::prefix('alumno')
     Route::get('/materias', [AlumnoController::class, 'materias'])->name('materias');
 
     // Inscribirse en múltiples grupos
-    Route::post('/inscribirse', [AlumnoController::class, 'inscribirseMultiple'])->name('inscribirse');
+    Route::post('/inscribirse', [AlumnoController::class, 'inscribirse'])->name('inscribirse');
+
+     // Lista de maestros disponibles para evaluar
+
+    Route::get('evaluaciones', [EvaluacionController::class, 'index'])->name('evaluaciones.index');
+    Route::get('evaluaciones/{maestro}', [EvaluacionController::class, 'create'])->name('evaluaciones.create');
+    Route::post('evaluaciones/{maestro}', [EvaluacionController::class, 'store'])->name('evaluaciones.store');
 });
+
+
+
+
 
 
 // ===========================
@@ -92,11 +102,31 @@ Route::prefix('maestro')
         Route::post('/asistencias/registrar', [MaestroController::class, 'registrarAsistencias'])
             ->name('asistencias.registrar');
 
-        // Calificaciones finales
-        Route::get('/calificaciones-finales', [MaestroController::class, 'calificacionesFinales'])
-            ->name('calificaciones.finales');
-    });
+    // INDEX → lista de grupos del maestro para calificar
+        Route::get('/calificaciones', 
+            [MaestroController::class, 'indexCalificaciones']
+        )->name('calificaciones.index');
 
+        // CREATE → formulario para capturar calificaciones de un grupo
+        Route::get('/calificaciones/{grupo}/create', 
+            [MaestroController::class, 'createCalificaciones']
+        )->name('calificaciones.create');
+
+        // STORE → guardar calificaciones
+        Route::post('/calificaciones', 
+            [MaestroController::class, 'storeCalificaciones']
+        )->name('calificaciones.store');
+
+        // EDIT → formulario para editar una calificación
+        Route::get('/calificaciones/{calificacion}/edit', 
+            [MaestroController::class, 'editCalificacion']
+        )->name('calificaciones.edit');
+
+        // UPDATE → guardar edición
+        Route::put('/calificaciones/{calificacion}', 
+            [MaestroController::class, 'updateCalificacion']
+        )->name('calificaciones.update');
+    });
 
 
 
@@ -174,6 +204,7 @@ Route::prefix('coordinador')
     Route::get('/alumnos/{id}/editar', [CoordinadorController::class, 'alumnosEdit'])->name('alumnos.edit');
     Route::put('/alumnos/{id}', [CoordinadorController::class, 'alumnosUpdate'])->name('alumnos.update');
     Route::delete('/alumnos/{id}', [CoordinadorController::class, 'alumnosDestroy'])->name('alumnos.destroy');
+
     // ==== CRUD GRUPOS ====
     Route::get('/grupos', [CoordinadorController::class, 'gruposIndex'])->name('grupos.index');
     Route::get('/grupos/crear', [CoordinadorController::class, 'gruposCreate'])->name('grupos.create');
@@ -182,10 +213,14 @@ Route::prefix('coordinador')
     Route::put('/grupos/{id}', [CoordinadorController::class, 'gruposUpdate'])->name('grupos.update');
     Route::delete('/grupos/{id}', [CoordinadorController::class, 'gruposDestroy'])->name('grupos.destroy');
 
+    // ==== ALUMNOS POR GRUPO ====
+    Route::get('/grupos/{grupo}/alumnos', [CoordinadorController::class, 'alumnosGrupo'])->name('grupos.alumnos');
+    Route::post('/grupos/{grupo}/alumnos', [CoordinadorController::class, 'agregarAlumno'])->name('grupos.alumnos.agregar');
+    Route::delete('/grupos/{grupo}/alumnos/{alumno}', [CoordinadorController::class, 'eliminarAlumno'])->name('grupos.alumnos.eliminar');
+
     // Guardar asignaciones
     Route::post('/asignaciones/guardar', [CoordinadorController::class, 'asignacionesGuardar'])->name('asignar.guardar');
 });
-
 
 //ADMIN
 Route::middleware(['auth', 'role:admin'])->group(function () {

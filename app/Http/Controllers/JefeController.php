@@ -7,7 +7,8 @@ use App\Models\User;
 use App\Models\Grupo;
 use App\Models\Materia;
 use Illuminate\Support\Facades\Hash;
-
+use App\Models\Asistencia;
+use App\Models\HistorialAcademico;
 class JefeController extends Controller
 {
     // ========================
@@ -28,33 +29,53 @@ class JefeController extends Controller
         return view('jefe.grupos', compact('grupos'));
     }
 
-    public function reportes()
-    {
-        // Datos simulados
-        $alumnos = [
-            (object)[ 'name' => 'Juan Pérez', 'carrera' => 'Ingeniería', 'inasistencias' => 3, 'promedio' => 8.5 ],
-            (object)[ 'name' => 'Ana Gómez', 'carrera' => 'Ingeniería', 'inasistencias' => 6, 'promedio' => 7.8 ],
-            (object)[ 'name' => 'Luis Torres', 'carrera' => 'Medicina', 'inasistencias' => 2, 'promedio' => 9.2 ],
-            (object)[ 'name' => 'María López', 'carrera' => 'Derecho', 'inasistencias' => 4, 'promedio' => 8.0 ],
+public function reportes()
+{
+    // Traer todos los alumnos con sus grupos, asistencias y calificaciones
+    $alumnos = User::role('alumno')
+                   ->with(['grupos', 'asistencias', 'calificaciones'])
+                   ->get();
+
+    // Mapear cada alumno para generar los datos del reporte
+    $alumnosReporte = $alumnos->map(function($alumno) {
+
+        $totalAsistencias = $alumno->asistencias->where('estado', 'presente')->count();
+        $totalInasistencias = $alumno->asistencias->where('estado', 'ausente')->count();
+        $totalJustificados = $alumno->asistencias->where('estado', 'justificado')->count();
+
+        $promedio = $alumno->calificaciones->avg('calificacion') ?? 0;
+
+        return (object)[
+            'id' => $alumno->id,
+            'name' => $alumno->name,
+            'carrera' => $alumno->grupos->first()->carrera ?? 'Ingenieria en Sistemas Computacionales',
+            'inasistencias' => $totalInasistencias,
+            'asistencias' => $totalAsistencias,
+            'justificados' => $totalJustificados,
+            'promedio' => round($promedio, 2)
         ];
+    });
 
-        $carreras = collect($alumnos)->pluck('carrera')->unique();
+    // Resumen por carrera
+    $carreras = $alumnosReporte->pluck('carrera')->unique();
 
-        $inasistenciasPorCarrera = $carreras->map(fn($carrera) =>
-            collect($alumnos)->where('carrera', $carrera)->sum('inasistencias')
-        );
+    $inasistenciasPorCarrera = $carreras->map(fn($carrera) =>
+        $alumnosReporte->where('carrera', $carrera)->sum('inasistencias')
+    );
 
-        $promedioPorCarrera = $carreras->map(fn($carrera) =>
-            collect($alumnos)->where('carrera', $carrera)->avg('promedio')
-        );
+    $promedioPorCarrera = $carreras->map(fn($carrera) =>
+        $alumnosReporte->where('carrera', $carrera)->avg('promedio')
+    );
 
-        return view('jefe.reportes', compact(
-            'alumnos',
-            'carreras',
-            'inasistenciasPorCarrera',
-            'promedioPorCarrera'
-        ));
-    }
+    // Retornar la vista con los datos listos
+    return view('jefe.reportes', [
+        'alumnos' => $alumnosReporte,
+        'carreras' => $carreras,
+        'inasistenciasPorCarrera' => $inasistenciasPorCarrera,
+        'promedioPorCarrera' => $promedioPorCarrera
+    ]);
+}
+
 
     // ========================
     //      CRUD DE ALUMNOS
@@ -71,25 +92,29 @@ class JefeController extends Controller
         return view('jefe.alumnos.create');
     }
 
-    public function alumnosStore(Request $request)
-    {
-        $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:6',
-        ]);
+public function alumnosStore(Request $request)
+{
+    $request->validate([
+        'matricula' => 'required|string|unique:users,matricula',
+        'name'      => 'required|string|max:255',
+        'email'     => 'required|email|unique:users,email',
+        'password'  => 'required|confirmed|min:6',
+    ]);
 
-        $alumno = User::create([
-            'name'     => $request->name,
-            'email'    => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $alumno = User::create([
+        'matricula' => $request->matricula,
+        'name'      => $request->name,
+        'email'     => $request->email,
+        'password'  => Hash::make($request->password),
+        'creditos'  => 30, // Se asignan 30 créditos al crear
+    ]);
 
-        $alumno->assignRole('alumno');
+    $alumno->assignRole('alumno');
 
-        return redirect()->route('jefe.alumnos.index')
-                         ->with('success', 'Alumno creado correctamente.');
-    }
+    return redirect()->route('jefe.alumnos.index')
+                     ->with('success', 'Alumno creado correctamente con 30 créditos.');
+}
+
 
     public function alumnosEdit($id)
     {
@@ -206,30 +231,68 @@ class JefeController extends Controller
     //   ASIGNAR MAESTRO A GRUPO
     // ========================
 
-   public function asignarMaestroForm()
+public function asignarMaestroForm()
 {
-    // Trae todos los grupos con su materia y maestro asignado (si lo hay)
     $grupos = Grupo::with(['materia', 'maestro'])->get();
-
-    // Trae todos los maestros
     $maestros = User::role('maestro')->get();
 
-    return view('jefe.asignaciones', compact('grupos', 'maestros'));
+    $conflictos = [];
+
+    foreach ($grupos as $grupo) {
+        if (!$grupo->maestro_id) continue;
+
+        foreach ($grupos as $otro) {
+            if ($grupo->id == $otro->id || !$otro->maestro_id) continue;
+            if ($grupo->maestro_id != $otro->maestro_id) continue;
+
+            // Detecta solapamiento
+            if ($grupo->hora_inicio < $otro->hora_fin && $grupo->hora_fin > $otro->hora_inicio) {
+                $conflictos[$grupo->id][] = $otro->id;
+            }
+        }
+    }
+
+    return view('jefe.asignaciones', compact('grupos', 'maestros', 'conflictos'));
 }
+
+
 
 public function asignarMaestroStore(Request $request)
 {
     $request->validate([
-        'maestro_id' => 'required|array', // debe ser un array de maestro_id por grupo
+        'maestro_id' => 'required|array',
         'maestro_id.*' => 'nullable|exists:users,id',
     ]);
 
+    $conflictos = [];
+
     foreach ($request->maestro_id as $grupoId => $maestroId) {
         $grupo = Grupo::find($grupoId);
-        if ($grupo) {
-            $grupo->maestro_id = $maestroId; // puede ser null para desasignar
-            $grupo->save();
+        if ($grupo && $maestroId) {
+            // Revisar conflicto de horario
+            $conflicto = Grupo::where('maestro_id', $maestroId)
+                ->where('id', '<>', $grupo->id)
+                ->where(function($q) use ($grupo) {
+                    $q->whereBetween('hora_inicio', [$grupo->hora_inicio, $grupo->hora_fin])
+                      ->orWhereBetween('hora_fin', [$grupo->hora_inicio, $grupo->hora_fin])
+                      ->orWhere(function($q2) use ($grupo) {
+                          $q2->where('hora_inicio', '<=', $grupo->hora_inicio)
+                             ->where('hora_fin', '>=', $grupo->hora_fin);
+                      });
+                })
+                ->exists();
+
+            if ($conflicto) {
+                $conflictos[] = "El maestro asignado al grupo {$grupo->nombre} ya tiene otra clase en ese horario.";
+            } else {
+                $grupo->maestro_id = $maestroId;
+                $grupo->save();
+            }
         }
+    }
+
+    if (!empty($conflictos)) {
+        return redirect()->back()->with('error', implode('<br>', $conflictos));
     }
 
     return redirect()->route('jefe.asignaciones')

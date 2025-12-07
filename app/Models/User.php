@@ -6,25 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
-
+ use App\Models\HistorialAcademico;
+ use App\Models\Asistencia;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
-    // Campos asignables
     protected $fillable = [
         'name',
         'email',
         'password',
+        'matricula',
     ];
 
-    // Campos ocultos
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    // Casts automáticos
     protected function casts(): array
     {
         return [
@@ -33,9 +32,30 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Devuelve la ruta del dashboard según el rol del usuario
-     */
+    // 🔥 MATRÍCULA AUTOMÁTICA
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+
+            if (!$user->matricula) {
+
+                // Prefijos válidos
+                $prefijos = ['19', '20', '21'];
+
+                // Prefijo aleatorio
+                $prefijo = $prefijos[array_rand($prefijos)];
+
+                // 6 dígitos aleatorios
+                $numero = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+
+                // Matrícula final
+                $user->matricula = $prefijo . $numero;
+            }
+        });
+    }
+
     public function dashboardRoute(): string
     {
         $rol = $this->getRoleNames()->first();
@@ -50,26 +70,17 @@ class User extends Authenticatable
         };
     }
 
-    /**
-     * Relación con el historial de materias (aprobadas/reprobadas)
-     */
     public function historiales()
     {
         return $this->hasMany(Historial::class, 'alumno_id');
     }
 
-    /**
-     * Relación con los grupos en los que el alumno está inscrito
-     */
     public function grupos()
     {
         return $this->belongsToMany(Grupo::class, 'grupo_user', 'user_id', 'grupo_id')
                     ->withTimestamps();
     }
 
-    /**
-     * Créditos totales aprobados (opcional)
-     */
     public function creditosAprobados(): int
     {
         return $this->historiales()
@@ -77,9 +88,6 @@ class User extends Authenticatable
                     ->sum('creditos_obtenidos');
     }
 
-    /**
-     * Materias aprobadas
-     */
     public function materiasAprobadas()
     {
         return $this->historiales()
@@ -87,13 +95,19 @@ class User extends Authenticatable
                     ->with('materia');
     }
 
-    /**
-     * Materias reprobadas
-     */
     public function materiasReprobadas()
     {
         return $this->historiales()
                     ->where('estado', 'reprobada')
                     ->with('materia');
     }
+      public function asistencias()
+    {
+        return $this->hasMany(Asistencia::class, 'alumno_id');
+    }
+     public function calificaciones()
+    {
+        return $this->hasMany(HistorialAcademico::class, 'alumno_id');
+    }
+
 }

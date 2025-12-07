@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Materia;
 use App\Models\Grupo;
-
+use App\Models\HistorialAcademico;
 class AlumnoController extends Controller
 {
     /**
@@ -35,35 +35,67 @@ class AlumnoController extends Controller
     /**
      * Selección de horario
      */
- public function seleccionarHorario()
-{
-    $alumno = Auth::user();
+    // Mostrar la selección de horario
+    public function seleccionarHorario()
+    {
+        $alumno = Auth::user();
 
-    $grupos = Grupo::with(['materia', 'maestro', 'alumnos'])->get();
+        // Obtener todos los grupos con su materia y maestro
+        $grupos = Grupo::with(['materia', 'maestro'])->get();
 
-    // IDs de los grupos ya seleccionados por el alumno
-    $seleccionadosIds = $alumno->grupos->pluck('id')->toArray();
+        // IDs de grupos que el alumno ya tiene inscritos
+        $seleccionadosIds = $alumno->grupos->pluck('id')->toArray();
 
-    return view('alumno.horario', compact('grupos', 'seleccionadosIds'));
-}
+        // Créditos disponibles del alumno
+        $creditosDisponibles = $alumno->creditos;
+
+        return view('alumno.horario', compact('grupos', 'seleccionadosIds', 'creditosDisponibles'));
+    }
+
+
 
     /**
      * Progreso del alumno
      */
-    public function progreso()
-    {
-        $alumno = Auth::user();
+  public function progreso()
+{
+    $alumnoId = auth()->id();
 
-        $materiasAprobadas  = $alumno->materiasAprobadas;
-        $materiasReprobadas = $alumno->materiasReprobadas;
-        $creditos           = $alumno->creditosAprobados();
+    // Historial de materias cursadas
+    $historial = \App\Models\HistorialAcademico::with(['materia','maestro'])
+                    ->where('alumno_id', $alumnoId)
+                    ->get();
 
-        return view('alumno.progreso', compact(
-            'materiasAprobadas',
-            'materiasReprobadas',
-            'creditos'
-        ));
-    }
+    // Materias pendientes
+    $materiasPendientes = \App\Models\Materia::whereNotIn('id', $historial->pluck('materia_id'))->get();
+
+    // Promedio
+    $promedio = $historial->avg('calificacion');
+
+    // Créditos cursados
+    $creditosCursados = $historial->sum('creditos_otorgados');
+
+    // Créditos aprobados
+    $creditosAprobados = $historial->where('calificacion','>=',70)->sum('creditos_otorgados');
+
+    // Total de créditos (cursados + pendientes)
+    $totalCreditos = $creditosCursados + $materiasPendientes->sum('creditos');
+
+    // Agrupar materias por semestre
+    $materiasPorSemestre = $historial->groupBy(function($item){
+        return $item->materia->semestre; // suponiendo que la materia tiene campo 'semestre'
+    });
+
+    return view('alumno.progreso', compact(
+        'historial',
+        'materiasPendientes',
+        'promedio',
+        'creditosCursados',
+        'creditosAprobados',
+        'totalCreditos',
+        'materiasPorSemestre'
+    ));
+}
 
     /**
      * Historial de materias del alumno
@@ -81,53 +113,52 @@ public function materias()
     /**
      * Inscribirse en uno o varios grupos
      */
-    public function inscribirse(Request $request)
-    {
-        $alumno = Auth::user();
-
-        // Validar que se envíe un array JSON de materias
-        $request->validate([
-            'materias_seleccionadas' => 'required|json',
-        ]);
-
-        $materias = json_decode($request->materias_seleccionadas, true);
-
-        if (empty($materias)) {
-            return back()->with('error', 'No seleccionaste materias.');
-        }
-
-        foreach ($materias as $grupo_id) {
-            $grupo = Grupo::with('materia', 'alumnos')->find($grupo_id);
-            if (!$grupo) continue;
-
-            // 1️⃣ Verificar cupo disponible
-            if ($grupo->alumnos()->count() >= $grupo->cupo_max) {
-                return back()->with('error', "El grupo {$grupo->materia->nombre} está lleno.");
-            }
-
-            // 2️⃣ Evitar duplicados
-            if ($alumno->grupos->contains($grupo->id)) {
-                continue;
-            }
-
-            // 3️⃣ Verificar conflictos de horario
-            $conflicto = $alumno->grupos->first(function ($g) use ($grupo) {
-                return $grupo->hora_inicio < $g->hora_fin && $grupo->hora_fin > $g->hora_inicio;
-            });
-
-            if ($conflicto) {
-                return back()->with('error', "El grupo {$grupo->materia->nombre} tiene conflicto de horario con {$conflicto->materia->nombre}.");
-            }
-
-            // 4️⃣ Inscribir alumno
-            $alumno->grupos()->attach($grupo->id);
-        }
-
-        return back()->with('success', 'Te has inscrito correctamente en los grupos seleccionados.');
-    }
-    public function inscribirseMultiple(Request $request)
+  // Confirmar inscripción de materias
+   public function inscribirse(Request $request)
 {
-    return $this->inscribirse($request);
+    $alumno = Auth::user();
+    $materiasSeleccionadas = json_decode($request->materias_seleccionadas);
+
+    if (empty($materiasSeleccionadas)) {
+        return redirect()->back()->with('error', 'No seleccionaste ninguna materia.');
+    }
+
+    // Traer todos los grupos que el alumno ya tiene inscritos
+    $gruposActuales = $alumno->grupos()->with('materia')->get();
+
+    // Traer los grupos que quiere inscribir
+    $gruposSeleccionados = Grupo::with('materia')->whereIn('id', $materiasSeleccionadas)->get();
+
+    // Validar conflictos de horario
+    foreach ($gruposSeleccionados as $nuevoGrupo) {
+        $nuevoInicio = strtotime($nuevoGrupo->hora_inicio);
+        $nuevoFin    = strtotime($nuevoGrupo->hora_fin);
+
+        foreach ($gruposActuales as $existente) {
+            $existInicio = strtotime($existente->hora_inicio);
+            $existFin    = strtotime($existente->hora_fin);
+
+            if (!($nuevoFin <= $existInicio || $nuevoInicio >= $existFin)) {
+                return redirect()->back()->with('error', 'No puedes inscribirte en "' . $nuevoGrupo->materia->nombre . '" porque tiene conflicto de horario con "' . $existente->materia->nombre . '".');
+            }
+        }
+    }
+
+    // Sumar créditos de materias seleccionadas
+    $totalSeleccion = $gruposSeleccionados->sum(function($g) { return $g->materia->creditos ?? 0; });
+
+    if ($totalSeleccion > $alumno->creditos) {
+        return redirect()->back()->with('error', 'Excedes los créditos disponibles.');
+    }
+
+    // Asociar materias al alumno
+    $alumno->grupos()->syncWithoutDetaching($materiasSeleccionadas);
+
+    // Restar créditos del alumno
+    $alumno->creditos -= $totalSeleccion;
+    $alumno->save();
+
+    return redirect()->back()->with('success', 'Inscripción realizada correctamente.');
 }
 
 }

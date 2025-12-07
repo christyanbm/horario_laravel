@@ -13,6 +13,7 @@ class UserSeeder extends Seeder
         $admin = User::factory()->create([
             'name' => 'Administrador',
             'email' => 'admin@example.com',
+            'matricula' => null, // Se generará automáticamente
         ]);
         $admin->assignRole('admin');
 
@@ -20,6 +21,7 @@ class UserSeeder extends Seeder
         $jefe = User::factory()->create([
             'name' => 'Jefe de Área',
             'email' => 'jefe@example.com',
+            'matricula' => null,
         ]);
         $jefe->assignRole('jefe');
 
@@ -27,6 +29,7 @@ class UserSeeder extends Seeder
         $coordinador = User::factory()->create([
             'name' => 'Coordinador General',
             'email' => 'coordinador@example.com',
+            'matricula' => null,
         ]);
         $coordinador->assignRole('coordinador');
 
@@ -34,6 +37,7 @@ class UserSeeder extends Seeder
         $maestro = User::factory()->create([
             'name' => 'Maestro Ejemplo',
             'email' => 'maestro@example.com',
+            'matricula' => null,
         ]);
         $maestro->assignRole('maestro');
 
@@ -41,11 +45,12 @@ class UserSeeder extends Seeder
         $alumno = User::factory()->create([
             'name' => 'Alumno Ejemplo',
             'email' => 'alumno@example.com',
+            'matricula' => null,
         ]);
         $alumno->assignRole('alumno');
 
-        // Crear 20 usuarios aleatorios y asignarles roles al azar
-        User::factory(20)->create()->each(function ($user) {
+        // Crear 20 usuarios aleatorios con matrícula automática
+        User::factory(40)->create()->each(function ($user) {
             $roles = ['admin', 'alumno', 'jefe', 'maestro', 'coordinador'];
             $user->assignRole(fake()->randomElement($roles));
         });

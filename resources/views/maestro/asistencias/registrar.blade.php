@@ -2,7 +2,8 @@
 
 @include('partials.menu')
 
-@section('content')
+@section('title', 'Calificaciones Finales')
+
 <div class="container mt-4">
 
     <h2 class="fw-bold mb-3">

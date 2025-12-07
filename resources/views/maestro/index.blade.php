@@ -20,7 +20,8 @@
 
         {{-- Calificaciones Finales --}}
         <div class="col-md-4">
-            <a href="{{ route('maestro.calificaciones.finales') }}" class="text-decoration-none">
+           <a href="{{ route('maestro.calificaciones.index') }}" class="text-decoration-none">
+
                 <div class="card text-center shadow-sm p-3">
                     <i class="fas fa-graduation-cap fa-2x mb-2"></i>
                     <h5>Calificaciones Finales</h5>

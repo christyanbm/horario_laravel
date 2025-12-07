@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('clave')->nullable();
-            $table->string('creditos');  // Ejemplo: "3-2-5"
+             $table->integer('creditos');  // Cambiado de string a entero
             $table->integer('semestre');
             $table->timestamps();
         });

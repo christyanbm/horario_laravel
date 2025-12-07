@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Crear Maestro')
 
 @section('content')

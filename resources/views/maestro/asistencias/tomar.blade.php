@@ -49,6 +49,42 @@
                 @endforeach
             </tbody>
         </table>
+@if($asistenciasRegistradas->count() > 0)
+<div class="card shadow-sm mt-5">
+    <div class="card-header">Historial de Asistencias</div>
+    <div class="card-body p-0">
+        <table class="table table-striped mb-0">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Alumno</th>
+                    <th>Estado</th>
+                    <th>Observación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($asistenciasRegistradas as $asistencia)
+                <tr>
+                    <td>{{ \Carbon\Carbon::parse($asistencia->fecha)->format('d/m/Y') }}</td>
+                    <td>{{ $asistencia->alumno->name }}</td>
+                    <td>
+                        @if($asistencia->estado === 'presente')
+                            <span class="badge bg-success">Presente</span>
+                        @elseif($asistencia->estado === 'ausente')
+                            <span class="badge bg-danger">Ausente</span>
+                        @elseif($asistencia->estado === 'justificado')
+                            <span class="badge bg-warning text-dark">Justificado</span>
+                        @endif
+                    </td>
+                    <td>{{ $asistencia->observacion ?? '-' }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+@endif
+
 
         <button class="btn btn-primary mt-3">Guardar Asistencias</button>
     </form>

@@ -9,7 +9,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
         <div>
             <h2 class="fw-bold text-primary mb-0">Materias Inscritas</h2>
-            <small class="text-muted">Alumno: {{ auth()->user()->nombre }}</small>
+            <small class="text-muted">Alumno: {{ auth()->user()->name }}</small>
         </div>
         <div>
             <span class="badge bg-light text-dark border p-2 me-2">
@@ -43,7 +43,9 @@
                                     <td class="text-center">{{ $grupo->materia->creditos }}</td>
                                    <td>{{ $grupo->maestro->name ?? 'Sin asignar' }}</td>
 
-                                    <td>{{ $grupo->dia }} {{ $grupo->hora_inicio }} - {{ $grupo->hora_fin }}</td>
+                                   <td>{{ $grupo->horario }}</td>
+
+
                                 </tr>
                             @endforeach
                         </tbody>
