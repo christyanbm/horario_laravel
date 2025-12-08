@@ -5,27 +5,57 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2 class="fw-bold mb-4">Calificaciones Finales</h2>
+
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">📘 Calificaciones Finales</h2>
+        <p class="text-muted">Selecciona un grupo para registrar o editar sus calificaciones</p>
+    </div>
 
     @if($grupos->isEmpty())
-        <div class="alert alert-warning">No tienes grupos asignados.</div>
+        <div class="alert alert-warning shadow-sm text-center py-3">
+            No tienes grupos asignados.
+        </div>
     @else
-        <div class="list-group shadow-sm">
+
+        <div class="row g-4">
             @foreach($grupos as $grupo)
-                <a href="{{ route('maestro.calificaciones.create', $grupo->id) }}" 
-                   class="list-group-item list-group-item-action py-3">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h5 class="fw-bold mb-1">{{ $grupo->nombre }}</h5>
-                            <small class="text-muted">{{ $grupo->materia->nombre }}</small>
-                            <small class="text-muted">{{ $grupo->materia->hora_inicio }}</small>
-                            <small class="text-muted">{{ $grupo->materia->hora_fin }}</small>
+                <div class="col-md-6 col-lg-4">
+                    <a href="{{ route('maestro.calificaciones.create', $grupo->id) }}" class="text-decoration-none">
+                        <div class="card shadow-sm border-0 rounded-3 group-card-hover">
+                            <div class="card-body">
+
+                                <h5 class="fw-bold mb-1 text-dark">
+                                    {{ $grupo->nombre }}
+                                </h5>
+
+                                <p class="mb-2 text-primary fw-semibold">
+                                    {{ $grupo->materia->nombre }}
+                                </p>
+
+                                <div class="d-flex justify-content-between mt-3">
+                                    <small class="text-muted">
+                                        ⏰ {{ $grupo->hora_inicio }} — {{ $grupo->hora_fin }}
+                                    </small>
+                                    <span class="badge bg-primary px-3 py-2 shadow-sm">Calificar</span>
+                                </div>
+
+                            </div>
                         </div>
-                        <span class="badge bg-primary">Calificar</span>
-                    </div>
-                </a>
+                    </a>
+                </div>
             @endforeach
         </div>
+
     @endif
 </div>
+
+<style>
+    .group-card-hover {
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .group-card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+</style>
 @endsection

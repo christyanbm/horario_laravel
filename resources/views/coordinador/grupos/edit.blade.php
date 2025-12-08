@@ -42,18 +42,7 @@
                 <input type="time" name="hora_fin" class="form-control" value="{{ old('hora_fin', $grupo->hora_fin->format('H:i')) }}" required>
             </div>
 
-            {{-- Maestro --}}
-            <div class="mb-3">
-                <label class="form-label">Maestro</label>
-                <select name="maestro_id" class="form-select">
-                    <option value="">-- Sin maestro --</option>
-                    @foreach($maestros as $maestro)
-                        <option value="{{ $maestro->id }}" {{ $grupo->maestro_id == $maestro->id ? 'selected' : '' }}>
-                            {{ $maestro->name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+       
 
             <button class="btn btn-success">Actualizar</button>
             <a href="{{ route('coordinador.grupos.index') }}" class="btn btn-secondary">Cancelar</a>

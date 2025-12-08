@@ -22,4 +22,15 @@ class Evaluacion extends Model
         'dinamica',
         'comentario',
     ];
+   public function alumno()
+    {
+        return $this->belongsTo(User::class, 'alumno_id');
+    }
+
+    // Maestro evaluado
+    public function maestro()
+    {
+        return $this->belongsTo(User::class, 'maestro_id');
+    }
+
 }

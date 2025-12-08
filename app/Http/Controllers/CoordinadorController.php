@@ -48,90 +48,102 @@ public function horarios()
 
    
 
-    // =========================================
-    //   ALUMNOS
-    // =========================================
+   // =========================================
+//   ALUMNOS (COORDINADOR)
+// =========================================
 
-    /** Mostrar lista de alumnos */
-    public function alumnosIndex()
-    {
-        $alumnos = User::role('alumno')->get(); // ✔ CORRECTO
-        return view('coordinador.alumnos.index', compact('alumnos'));
-    }
+/** Mostrar lista de alumnos */
+public function alumnosIndex()
+{
+    $alumnos = User::role('Alumno')->get(); 
+    return view('coordinador.alumnos.index', compact('alumnos'));
+}
 
-    /** Mostrar formulario para crear */
-    public function alumnosCreate()
-    {
-        return view('coordinador.alumnos.create');
-    }
+/** Mostrar formulario para crear alumno */
+public function alumnosCreate()
+{
+    return view('coordinador.alumnos.create');
+}
 
-    /** Guardar un nuevo alumno */
-    public function alumnosStore(Request $request)
-    {
+/** Guardar un nuevo alumno */
+public function alumnosStore(Request $request)
+{
+    $request->validate([
+        'name'      => 'required|string|max:255',
+        'email'     => 'required|email|unique:users,email',
+        'password'  => 'required|confirmed|min:8',
+        'matricula' => 'required|string|unique:users,matricula',
+    ]);
+
+    // Datos base del alumno
+    $data = [
+        'name'      => $request->name,
+        'email'     => $request->email,
+        'password'  => Hash::make($request->password),
+        'matricula' => $request->matricula,
+        'creditos'  => 30, // igual que el admin
+    ];
+
+    $alumno = User::create($data);
+
+    // Asignar el rol de Alumno
+    $alumno->assignRole('Alumno');
+if ($request->role === 'Alumno') {
+    $userData['matricula'] = $request->matricula;
+    $userData['creditos'] = 30;
+}
+    return redirect()
+        ->route('coordinador.alumnos.index')
+        ->with('success', 'Alumno creado correctamente.');
+}
+
+/** Formulario de edición */
+public function alumnosEdit($id)
+{
+    $alumno = User::role('Alumno')->findOrFail($id);
+    return view('coordinador.alumnos.edit', compact('alumno'));
+}
+
+/** Guardar cambios */
+public function alumnosUpdate(Request $request, $id)
+{
+    $alumno = User::role('Alumno')->findOrFail($id);
+
+    $request->validate([
+        'name'      => 'required|string|max:255',
+        'email'     => "required|email|unique:users,email,{$alumno->id}",
+        'matricula' => "required|string|unique:users,matricula,{$alumno->id}",
+    ]);
+
+    $alumno->name = $request->name;
+    $alumno->email = $request->email;
+    $alumno->matricula = $request->matricula;
+
+    if ($request->filled('password')) {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|confirmed|min:6',
+            'password' => 'confirmed|min:8',
         ]);
-
-        $alumno = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        // 👉 ASIGNAR ROL CON SPATIE
-        $alumno->assignRole('alumno');
-
-        return redirect()
-            ->route('coordinador.alumnos.index')
-            ->with('success', 'Alumno creado correctamente.');
+        $alumno->password = Hash::make($request->password);
     }
 
-    /** Formulario de edición */
-    public function alumnosEdit($id)
-    {
-        $alumno = User::role('alumno')->findOrFail($id); // ✔
-        return view('coordinador.alumnos.edit', compact('alumno'));
-    }
+    $alumno->save();
 
-    /** Guardar cambios */
-    public function alumnosUpdate(Request $request, $id)
-    {
-        $alumno = User::role('alumno')->findOrFail($id);
+    return redirect()
+        ->route('coordinador.alumnos.index')
+        ->with('success', 'Alumno actualizado correctamente.');
+}
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => "required|email|unique:users,email,{$alumno->id}",
-        ]);
+/** Eliminar alumno */
+public function alumnosDestroy($id)
+{
+    $alumno = User::role('Alumno')->findOrFail($id);
+    $alumno->delete();
 
-        $alumno->name = $request->name;
-        $alumno->email = $request->email;
+    return redirect()
+        ->route('coordinador.alumnos.index')
+        ->with('success', 'Alumno eliminado correctamente.');
+}
 
-        if ($request->filled('password')) {
-            $request->validate([
-                'password' => 'confirmed|min:6',
-            ]);
-            $alumno->password = Hash::make($request->password);
-        }
-
-        $alumno->save();
-
-        return redirect()
-            ->route('coordinador.alumnos.index')
-            ->with('success', 'Alumno actualizado correctamente.');
-    }
-
-    /** Eliminar alumno */
-    public function alumnosDestroy($id)
-    {
-        $alumno = User::role('alumno')->findOrFail($id);
-        $alumno->delete();
-
-        return redirect()
-            ->route('coordinador.alumnos.index')
-            ->with('success', 'Alumno eliminado correctamente.');
-    }
   // =========================================
 //   GRUPOS (COORDINADOR)
 // =========================================
@@ -257,5 +269,15 @@ public function eliminarAlumno($grupo_id, $alumno_id)
 
     return back()->with('success', 'Alumno eliminado correctamente.');
 }
+public function removeAlumno($grupo_id, $alumno_id)
+{
+    $grupo = Grupo::findOrFail($grupo_id);
+
+    // Desvincular alumno del grupo (tabla pivot grupo_user)
+    $grupo->alumnos()->detach($alumno_id);
+
+    return back()->with('success', 'Alumno eliminado del grupo correctamente.');
+}
+
 
 }

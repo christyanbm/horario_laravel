@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @extends('partials.menu')
+
 @section('title', 'Editar Alumno')
 
 @section('content')
@@ -9,6 +10,12 @@
     <form action="{{ route('jefe.alumnos.update', $alumno->id) }}" method="POST">
         @csrf
         @method('PUT')
+
+        <div class="mb-3">
+            <label class="form-label">Matrícula</label>
+            <input type="text" name="matricula" class="form-control"
+                   value="{{ $alumno->matricula }}" required>
+        </div>
 
         <div class="mb-3">
             <label class="form-label">Nombre</label>
@@ -30,10 +37,7 @@
 
         <button type="submit" class="btn btn-primary">Actualizar</button>
 
-        {{-- REGRESAR SOLO A LA VISTA JEFE --}}
-        <a href="{{ route('jefe.alumnos.index') }}" class="btn btn-secondary">
-            Cancelar
-        </a>
+        <a href="{{ route('jefe.alumnos.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 @endsection

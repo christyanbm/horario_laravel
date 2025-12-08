@@ -1,4 +1,6 @@
 @extends('layouts.app')
+@extends('partials.menu')
+@section('title', 'Asistencias')
 
 @section('content')
 <div class="container mt-4">

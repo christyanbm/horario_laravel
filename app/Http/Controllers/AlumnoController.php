@@ -114,7 +114,7 @@ public function materias()
      * Inscribirse en uno o varios grupos
      */
   // Confirmar inscripción de materias
-   public function inscribirse(Request $request)
+ public function inscribirse(Request $request)
 {
     $alumno = Auth::user();
     $materiasSeleccionadas = json_decode($request->materias_seleccionadas);
@@ -123,11 +123,23 @@ public function materias()
         return redirect()->back()->with('error', 'No seleccionaste ninguna materia.');
     }
 
-    // Traer todos los grupos que el alumno ya tiene inscritos
+    // Grupos actuales
     $gruposActuales = $alumno->grupos()->with('materia')->get();
 
-    // Traer los grupos que quiere inscribir
+    // Grupos que seleccionó
     $gruposSeleccionados = Grupo::with('materia')->whereIn('id', $materiasSeleccionadas)->get();
+
+    // 🔥 VALIDACIÓN NUEVA: evitar reinscribirse si ya aprobó la materia
+    $historial = \App\Models\HistorialAcademico::where('alumno_id', $alumno->id)->get();
+    $materiasAprobadas = $historial->where('calificacion', '>=', 70)->pluck('materia_id')->toArray();
+
+    foreach ($gruposSeleccionados as $grupo) {
+        if (in_array($grupo->materia_id, $materiasAprobadas)) {
+            return redirect()->back()->with('error',
+                'No puedes inscribirte en "' . $grupo->materia->nombre . '" porque ya la acreditaste.'
+            );
+        }
+    }
 
     // Validar conflictos de horario
     foreach ($gruposSeleccionados as $nuevoGrupo) {
@@ -139,22 +151,27 @@ public function materias()
             $existFin    = strtotime($existente->hora_fin);
 
             if (!($nuevoFin <= $existInicio || $nuevoInicio >= $existFin)) {
-                return redirect()->back()->with('error', 'No puedes inscribirte en "' . $nuevoGrupo->materia->nombre . '" porque tiene conflicto de horario con "' . $existente->materia->nombre . '".');
+                return redirect()->back()->with('error',
+                    'No puedes inscribirte en "' . $nuevoGrupo->materia->nombre .
+                    '" porque tiene conflicto con "' . $existente->materia->nombre . '".'
+                );
             }
         }
     }
 
-    // Sumar créditos de materias seleccionadas
-    $totalSeleccion = $gruposSeleccionados->sum(function($g) { return $g->materia->creditos ?? 0; });
+    // Validar créditos
+    $totalSeleccion = $gruposSeleccionados->sum(function($g) {
+        return $g->materia->creditos ?? 0;
+    });
 
     if ($totalSeleccion > $alumno->creditos) {
         return redirect()->back()->with('error', 'Excedes los créditos disponibles.');
     }
 
-    // Asociar materias al alumno
+    // Guardar selección
     $alumno->grupos()->syncWithoutDetaching($materiasSeleccionadas);
 
-    // Restar créditos del alumno
+    // Restar créditos
     $alumno->creditos -= $totalSeleccion;
     $alumno->save();
 

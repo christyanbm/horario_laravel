@@ -180,6 +180,7 @@ Route::delete('/maestros/{id}', [JefeController::class, 'maestrosDestroy'])->nam
 Route::get('/asignaciones', [JefeController::class, 'asignarMaestroForm'])->name('asignaciones');
 Route::post('/asignaciones/guardar', [JefeController::class, 'asignarMaestroStore'])->name('asignaciones.guardar');
 
+ Route::get('/evaluaciones', [JefeController::class, 'evaluaciones'])->name('evaluaciones.index');
 
 });
 
@@ -220,6 +221,11 @@ Route::prefix('coordinador')
 
     // Guardar asignaciones
     Route::post('/asignaciones/guardar', [CoordinadorController::class, 'asignacionesGuardar'])->name('asignar.guardar');
+  
+    Route::delete('/grupos/{grupo}/alumnos/{alumno}', 
+    [CoordinadorController::class, 'removeAlumno']
+)->name('grupos.removeAlumno');
+
 });
 
 //ADMIN
@@ -239,4 +245,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/usuarios/{id}/edit', [AdminController::class, 'edit'])->name('admin.usuarios.edit');
     Route::put('/admin/usuarios/{id}', [AdminController::class, 'update'])->name('admin.usuarios.update');
     Route::delete('/admin/usuarios/{id}', [AdminController::class, 'destroy'])->name('admin.usuarios.destroy');
+
+    
 });

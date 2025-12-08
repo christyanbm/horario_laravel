@@ -17,6 +17,7 @@ class User extends Authenticatable
         'email',
         'password',
         'matricula',
+        'creditos'
     ];
 
     protected $hidden = [
@@ -79,7 +80,12 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Grupo::class, 'grupo_user', 'user_id', 'grupo_id')
                     ->withTimestamps();
+                 
     }
+public function gruposMaestro()
+{
+    return $this->hasMany(Grupo::class, 'maestro_id');
+}
 
     public function creditosAprobados(): int
     {
@@ -109,5 +115,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(HistorialAcademico::class, 'alumno_id');
     }
-
+public function evaluaciones()
+{
+    return $this->hasMany(\App\Models\Evaluacion::class, 'maestro_id');
+}
 }

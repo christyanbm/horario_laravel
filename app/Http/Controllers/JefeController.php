@@ -9,6 +9,8 @@ use App\Models\Materia;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Asistencia;
 use App\Models\HistorialAcademico;
+use App\Models\Evaluacion;
+
 class JefeController extends Controller
 {
     // ========================
@@ -106,7 +108,7 @@ public function alumnosStore(Request $request)
         'name'      => $request->name,
         'email'     => $request->email,
         'password'  => Hash::make($request->password),
-        'creditos'  => 30, // Se asignan 30 créditos al crear
+        'creditos'  => 30, // créditos iniciales igual que el coordinador
     ]);
 
     $alumno->assignRole('alumno');
@@ -298,5 +300,12 @@ public function asignarMaestroStore(Request $request)
     return redirect()->route('jefe.asignaciones')
                      ->with('success', 'Asignaciones de maestros actualizadas correctamente.');
 }
+public function evaluaciones()
+{
+    $evaluaciones = Evaluacion::with('maestro')->get();
+
+    return view('jefe.evaluaciones.index', compact('evaluaciones'));
+}
+
 
 }

@@ -1,8 +1,6 @@
 @extends('layouts.app')
-
-@section('content')
-
-@include('partials.menu')
+@extends('partials.menu')
+@section('title', 'Dashboard Maestro')
 
 <div class="container mt-4">
 

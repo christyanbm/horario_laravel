@@ -3,7 +3,6 @@
 @section('title', 'Editar Alumno')
 
 @section('content')
-
 @include('partials.menu')
 
 <div class="container mt-4">
@@ -27,6 +26,18 @@
             <form action="{{ route('coordinador.alumnos.update', $alumno->id) }}" method="POST">
                 @csrf
                 @method('PUT')
+
+                {{-- Matrícula --}}
+                <div class="mb-3">
+                    <label class="form-label">Matrícula:</label>
+                    <input 
+                        type="text" 
+                        name="matricula" 
+                        value="{{ old('matricula', $alumno->matricula) }}" 
+                        class="form-control" 
+                        required
+                    >
+                </div>
 
                 {{-- Nombre --}}
                 <div class="mb-3">
@@ -55,22 +66,14 @@
                 {{-- Contraseña (opcional) --}}
                 <div class="mb-3">
                     <label for="password" class="form-label">Nueva Contraseña (opcional):</label>
-                    <input
-                        type="password"
-                        name="password"
-                        class="form-control"
-                    >
+                    <input type="password" name="password" class="form-control">
                     <small class="text-muted">Dejar vacío si no deseas cambiarla.</small>
                 </div>
 
-                {{-- Confirmación de contraseña --}}
+                {{-- Confirmación --}}
                 <div class="mb-3">
-                    <label for="password_confirmation" class="form-label">Confirmar Nueva Contraseña:</label>
-                    <input
-                        type="password"
-                        name="password_confirmation"
-                        class="form-control"
-                    >
+                    <label class="form-label">Confirmar Nueva Contraseña:</label>
+                    <input type="password" name="password_confirmation" class="form-control">
                 </div>
 
                 {{-- Botones --}}

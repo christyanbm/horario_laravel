@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @extends('partials.menu')
+
 @section('title', 'Crear Alumno')
 
 @section('content')
@@ -28,10 +29,11 @@
             <label class="form-label">Contraseña</label>
             <input type="password" name="password" class="form-control" required>
         </div>
-<div class="mb-3">
-    <label class="form-label">Confirmar Contraseña</label>
-    <input type="password" name="password_confirmation" class="form-control" required>
-</div>
+
+        <div class="mb-3">
+            <label class="form-label">Confirmar Contraseña</label>
+            <input type="password" name="password_confirmation" class="form-control" required>
+        </div>
 
         <input type="hidden" name="role" value="alumno">
 

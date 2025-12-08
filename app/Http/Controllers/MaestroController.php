@@ -112,18 +112,25 @@ class MaestroController extends Controller
      ============================================================ */
 public function createCalificaciones($grupo_id)
 {
-    $grupo = Grupo::with(['materia', 'alumnos'])->where('id', $grupo_id)
+    $grupo = Grupo::with(['materia'])->where('id', $grupo_id)
         ->where('maestro_id', auth()->id())
         ->firstOrFail();
 
-    // Traer las calificaciones existentes del grupo/materia
-    $calificacionesExistentes = HistorialAcademico::where('materia_id', $grupo->materia_id)
-        ->whereIn('alumno_id', $grupo->alumnos->pluck('id'))
-        ->pluck('calificacion', 'alumno_id'); // clave = alumno_id, valor = calificación
+    // Alumnos actualmente inscritos en el grupo
+    $alumnosGrupo = $grupo->alumnos;
 
-    return view('maestro.calificaciones.create', compact('grupo', 'calificacionesExistentes'));
+    // Calificaciones registradas (historial)
+    $calificaciones = HistorialAcademico::with('alumno')
+        ->where('materia_id', $grupo->materia_id)
+        ->where('maestro_id', auth()->id())
+        ->get();
+
+    return view('maestro.calificaciones.create', [
+        'grupo' => $grupo,
+        'alumnosGrupo' => $alumnosGrupo, // mostrar alumnos pendientes
+        'calificaciones' => $calificaciones // mostrar tabla de historial
+    ]);
 }
-
    public function storeCalificaciones(Request $request)
 {
     $request->validate([
@@ -149,6 +156,11 @@ public function createCalificaciones($grupo_id)
         if ($alumno) {
             $alumno->increment('creditos', $creditos);
         }
+             // 3) ELIMINAR AL ALUMNO DEL GRUPO DESPUÉS DE SER CALIFICADO
+        \DB::table('grupo_user')
+            ->where('user_id', $alumno_id)
+            ->where('grupo_id', $grupo->id)
+            ->delete();
     }
 
     return redirect()

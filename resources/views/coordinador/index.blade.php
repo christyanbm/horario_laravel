@@ -26,7 +26,7 @@
             </div>
 
     <div class="col-md-4">
-    <a href="{{ route('coordinador.alumnos.create') }}" class="text-decoration-none">
+    <a href="{{ route('coordinador.alumnos.index') }}" class="text-decoration-none">
         <div class="card card-option p-3">
             <i class="fa fa-user-plus fa-2x mb-2"></i>
             <h5>Crear Alumno</h5>

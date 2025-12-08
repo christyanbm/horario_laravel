@@ -76,25 +76,55 @@
                             Mis Materias
                         </a>
                     </li>
-                @endif
-                {{-- Fin Alumno --}}
-
-                {{-- Maestro --}}
-                @if (auth()->check() && auth()->user()->hasRole('maestro'))
-                    <li class="nav-item px-1">
-                        <a class="nav-link {{ request()->routeIs('maestro.dashboard') ? 'active' : '' }}"
-                            href="{{ route('maestro.dashboard') }}">
-                            Dashboard Maestro
+                      <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('alumno.evaluaciones.index') ? 'active' : '' }}"
+                            href="{{ route('alumno.evaluaciones.index') }}">
+                            Evaluacion Docente
                         </a>
                     </li>
                 @endif
-                {{-- Fin Maestro --}}
+                {{-- Fin Alumno --}}
+
+             {{-- Maestro --}}
+@if (auth()->check() && auth()->user()->hasRole('maestro'))
+
+    <li class="nav-item px-1">
+        <a class="nav-link {{ request()->routeIs('maestro.dashboard') ? 'active' : '' }}"
+            href="{{ route('maestro.dashboard') }}">
+            Dashboard Maestro
+        </a>
+    </li>
+
+    <li class="nav-item px-1">
+        <a class="nav-link {{ request()->routeIs('maestro.asistencias') ? 'active' : '' }}"
+            href="{{ route('maestro.asistencias') }}">
+            Asistencias
+        </a>
+    </li>
+
+    <li class="nav-item px-1">
+        <a class="nav-link {{ request()->routeIs('maestro.calificaciones.index') ? 'active' : '' }}"
+            href="{{ route('maestro.calificaciones.index') }}">
+            Calificaciones
+        </a>
+    </li>
+
+    <li class="nav-item px-1">
+        <a class="nav-link {{ request()->routeIs('maestro.horario') ? 'active' : '' }}"
+            href="{{ route('maestro.horario') }}">
+            Horario
+        </a>
+    </li>
+
+@endif
+{{-- Fin Maestro --}}
+
                 {{-- Jefe de Departamento --}}
                 @if (auth()->check() && auth()->user()->hasRole('jefe'))
                     <li class="nav-item px-1">
-                        <a class="nav-link {{ request()->routeIs('jefe.grupos') ? 'active' : '' }}"
-                            href="{{ route('jefe.dashboard') }}">
-                            Gestion de Grupos
+                        <a class="nav-link {{ request()->routeIs('jefe.asignaciones') ? 'active' : '' }}"
+                            href="{{ route('jefe.asignaciones') }}">
+                            Asignaciones
                         </a>
                     </li>
                     <li class="nav-item px-1">
@@ -103,6 +133,24 @@
                             Reportes Académicos
                         </a>
                     </li>
+                    <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('jefe.alumnos.index') ? 'active' : '' }}"
+                            href="{{ route('jefe.alumnos.index') }}">
+                            Crear Alumno
+                        </a>
+                    </li>
+                  <li class="nav-item px-1">
+    <a class="nav-link {{ request()->routeIs('jefe.maestros.index') ? 'active' : '' }}"
+        href="{{ route('jefe.maestros.index') }}">
+        Crear Maestro
+    </a>
+</li>
+               <li class="nav-item px-1">
+    <a class="nav-link {{ request()->routeIs('jefe.evaluaciones.index') ? 'active' : '' }}"
+        href="{{ route('jefe.evaluaciones.index') }}">
+        Ver Evaluaciones
+    </a>
+</li>
                 @endif
                 {{-- Fin Jefe de Departamento --}}
                 {{-- Coordinador --}}
@@ -110,7 +158,25 @@
                     <li class="nav-item px-1">
                         <a class="nav-link {{ request()->routeIs('coordinador.dashboard') ? 'active' : '' }}"
                             href="{{ route('coordinador.dashboard') }}">
-                            Dashboard Coordinador
+                            Dashboard del Jefe
+                        </a>
+                    </li>
+                       <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('coordinador.horarios') ? 'active' : '' }}"
+                            href="{{ route('coordinador.horarios') }}">
+                            Horario
+                        </a>
+                    </li>
+                       <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('coordinador.alumnos.index') ? 'active' : '' }}"
+                            href="{{ route('coordinador.alumnos.index') }}">
+                           Crear Alumno
+                        </a>
+                    </li>
+                       <li class="nav-item px-1">
+                        <a class="nav-link {{ request()->routeIs('coordinador.grupos.index') ? 'active' : '' }}"
+                            href="{{ route('coordinador.grupos.index') }}">
+                            Grupos
                         </a>
                     </li>
                 @endif

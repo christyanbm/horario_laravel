@@ -1,8 +1,6 @@
 @extends('layouts.app')
-
-@include('partials.menu')
-
-@section('title', 'Calificaciones Finales')
+@extends('partials.menu')
+@section('title', 'Asistencias')
 
 <div class="container mt-4">
 

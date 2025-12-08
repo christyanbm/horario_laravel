@@ -14,12 +14,12 @@
         <div class="row g-4 mt-3">
 
             <!--Asignaciones-->
-         <a href="{{ route('jefe.asignaciones') }}" class="text-decoration-none">
-    <div class="card card-option p-3 text-center">
-        <i class="fa fa-folder fa-2x mb-2"></i>
-        <h5>Asignaciones</h5>
-    </div>
-</a>
+            <a href="{{ route('jefe.asignaciones') }}" class="text-decoration-none">
+                <div class="card card-option p-3 text-center">
+                    <i class="fa fa-folder fa-2x mb-2"></i>
+                    <h5>Asignaciones</h5>
+                </div>
+            </a>
 
             <!-- Reportes -->
             <div class="col-md-4">
@@ -50,7 +50,14 @@
                     </div>
                 </a>
             </div>
-
+            <div class="col-md-4">
+                <a href="{{ route('jefe.evaluaciones.index') }}" class="text-decoration-none">
+                    <div class="card card-option p-3 text-center">
+                        <i class="fa fa-star-half-alt fa-2x mb-2"></i>
+                        <h5>Evaluaciones Docentes</h5>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
 @endsection

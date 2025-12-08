@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @include('partials.menu')
 
-@section('title', 'Editar Calificaciones')
+@section('title', 'Calificaciones')
 
 @section('content')
 <div class="container mt-4">

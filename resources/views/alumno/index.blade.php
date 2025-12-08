@@ -1,5 +1,3 @@
-
-
 @extends('layouts.app')
 
 {{-- Incluir menú --}}
@@ -54,17 +52,17 @@
             </a>
         </div>
  {{-- Evaluación Docente --}}
-        <div class="col-md-3">
-            <a href="{{ route('alumno.evaluaciones.index') }}" class="text-decoration-none">
-                <div class="card text-center shadow-sm">
-                    <div class="card-body">
-                        <i class="fas fa-user-check fa-2x mb-2"></i>
-                        <h5 class="card-title">Evaluación Docente</h5>
-                        <p class="card-text">Realiza evaluaciones a tus maestros</p>
-                    </div>
-                </div>
-            </a>
+<div class="col-md-4">
+    <a href="{{ route('alumno.evaluaciones.index') }}" class="text-decoration-none">
+        <div class="card text-center shadow-sm">
+            <div class="card-body">
+                <i class="fas fa-user-check fa-2x mb-2"></i>
+                <h5 class="card-title">Evaluación Docente</h5>
+                <p class="card-text">Realiza evaluaciones a tus maestros</p>
+            </div>
         </div>
+    </a>
+</div>
     </div>
 </div>
 @endsection

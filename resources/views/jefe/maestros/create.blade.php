@@ -42,4 +42,5 @@
         <a href="{{ route('jefe.maestros.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
 @endsection
