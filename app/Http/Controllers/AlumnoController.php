@@ -161,7 +161,7 @@ public function materias()
 
     // Validar créditos
     $totalSeleccion = $gruposSeleccionados->sum(function($g) {
-        return $g->materia->creditos ?? 0;
+        return (int)($g->materia->creditos ?? 0);
     });
 
     if ($totalSeleccion > $alumno->creditos) {
