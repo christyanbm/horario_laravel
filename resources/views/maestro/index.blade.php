@@ -7,7 +7,7 @@
     <h2 class="mb-4">Bienvenido, {{ Auth::user()->name }}</h2>
 
     <div class="row g-4">
-        {{-- Asistencias --}}
+        
         <div class="col-md-4">
          <a href="{{ route('maestro.asistencias') }}" class="text-decoration-none">
 
@@ -18,7 +18,7 @@
             </a>
         </div>
 
-        {{-- Calificaciones Finales --}}
+       
         <div class="col-md-4">
            <a href="{{ route('maestro.calificaciones.index') }}" class="text-decoration-none">
 
@@ -29,7 +29,7 @@
             </a>
         </div>
 
-        {{-- Horario de Clases --}}
+       
         <div class="col-md-4">
             <a href="{{ route('maestro.horario') }}" class="text-decoration-none">
                 <div class="card text-center shadow-sm p-3">

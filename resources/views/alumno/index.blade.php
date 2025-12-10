@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-{{-- Incluir menú --}}
+
 @include('partials.menu')
 
 @section('title', 'Dashboard Alumno')
@@ -13,7 +13,7 @@
 
     <div class="row g-4">
 
-        {{-- Progreso General --}}
+      
         <div class="col-md-4">
             <a href="{{ route('alumno.progreso') }}" class="text-decoration-none">
                 <div class="card text-center shadow-sm">
@@ -26,7 +26,7 @@
             </a>
         </div>
 
-        {{-- Horario --}}
+        
         <div class="col-md-4">
             <a href="{{ route('alumno.horario.seleccion') }}" class="text-decoration-none">
                 <div class="card text-center shadow-sm">
@@ -39,7 +39,7 @@
             </a>
         </div>
 
-        {{-- Materias --}}
+        
         <div class="col-md-4">
             <a href="{{ route('alumno.materias') }}" class="text-decoration-none">
                 <div class="card text-center shadow-sm">
@@ -51,7 +51,7 @@
                 </div>
             </a>
         </div>
- {{-- Evaluación Docente --}}
+ 
 <div class="col-md-4">
     <a href="{{ route('alumno.evaluaciones.index') }}" class="text-decoration-none">
         <div class="card text-center shadow-sm">

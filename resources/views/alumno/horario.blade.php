@@ -6,18 +6,18 @@
 @section('content')
 <div class="container mt-4">
 
-    {{-- Encabezado --}}
+    
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-primary">Selección de Horario</h2>
             <p class="text-muted">Bienvenido. Selecciona las materias para tu próximo ciclo.</p>
         </div>
-        <a href="#" class="btn btn-outline-secondary">
+        <a href="{{ route('alumno.materias') }}">
             <i class="bi bi-calendar-check"></i> Ver Mi Horario Actual
         </a>
     </div>
 
-    {{-- Mensajes de Feedback --}}
+  
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -32,7 +32,7 @@
     @endif
 
     <div class="row">
-        {{-- Lista de Materias --}}
+        
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-white py-3">
@@ -93,17 +93,17 @@
             </div>
         </div>
 
-        {{-- Barra Lateral --}}
+        
         <div class="col-md-4">
             <div class="card shadow-sm sticky-top" style="top: 20px;">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Tu Carga Académica</h5>
                 </div>
                 <div class="card-body">
-                    {{-- Mensaje de conflicto --}}
+              
                     <div id="conflictMessage" class="alert alert-danger d-none mb-2" role="alert"></div>
 
-                    {{-- Lista de materias seleccionadas --}}
+                 
                     <ul class="list-group list-group-flush mb-3" id="listaSeleccionados">
                         <li class="list-group-item text-center text-muted small fst-italic" id="emptyState">
                             No has seleccionado materias aún.

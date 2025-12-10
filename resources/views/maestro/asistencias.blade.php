@@ -24,14 +24,14 @@
 
     @else
 
-    {{-- FORMULARIO --}}
+    
     <form action="{{ route('maestro.asistencias.registrar') }}" method="POST">
         @csrf
 
-        {{-- ID del grupo --}}
+       
         <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
 
-        {{-- FECHA --}}
+       
         <label class="fw-bold mt-3">Fecha de Asistencia:</label>
         <input type="date" name="fecha" class="form-control w-25 mb-3" required>
 
@@ -51,12 +51,12 @@
                     <td>{{ $alumno->matricula }}</td>
 
                     <td>
-                        {{-- Campo obligatorio alumno_id --}}
+                      
                         <input type="hidden" 
                                name="asistencias[{{ $alumno->id }}][alumno_id]" 
                                value="{{ $alumno->id }}">
 
-                        {{-- Estado --}}
+                   
                         <select 
                             class="form-select" 
                             name="asistencias[{{ $alumno->id }}][estado]">

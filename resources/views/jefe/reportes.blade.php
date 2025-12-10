@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mt-4">
 
-    {{-- 1. Encabezado Visual --}}
+   
     <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
         <div>
             <h2 class="fw-bold text-dark mb-0">
@@ -20,7 +20,7 @@
 
     <div class="row g-4">
 
-        {{-- 2. Resumen por Carrera --}}
+        
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3">
@@ -64,7 +64,7 @@
             </div>
         </div>
 
-        {{-- 3. Tabla Detallada de Alumnos --}}
+       
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
@@ -97,17 +97,17 @@
                                         <td class="ps-4 fw-bold">{{ $alumno->name }}</td>
                                         <td class="small text-muted">{{ $alumno->carrera }}</td>
 
-                                        {{-- Asistencias --}}
+                                       
                                         <td class="text-center">
                                             <span class="badge bg-success">{{ $alumno->asistencias }}</span>
                                         </td>
 
-                                        {{-- Inasistencias --}}
+                                        
                                         <td class="text-center">
                                             <span class="badge bg-danger">{{ $alumno->inasistencias }}</span>
                                         </td>
 
-                                        {{-- Justificados --}}
+                                        
                                         <td class="text-center">
                                             <span class="badge bg-warning text-dark">{{ $alumno->justificados }}</span>
                                         </td>
@@ -117,7 +117,7 @@
                                             {{ number_format($alumno->promedio, 2) }}
                                         </td>
 
-                                        {{-- Estatus --}}
+                                     
                                         <td class="text-center">
                                             @if($esRiesgoProm)
                                                 <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Reprobando</span>

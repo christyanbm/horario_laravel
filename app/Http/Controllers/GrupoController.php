@@ -22,7 +22,7 @@ class GrupoController extends Controller
 
     public function create()
     {
-        // Coordinador NO asigna maestro
+      
         $materias = Materia::all();
         return view('grupos.create', compact('materias'));
     }
@@ -37,7 +37,7 @@ class GrupoController extends Controller
             'materia_id' => 'required|exists:materias,id',
         ]);
 
-        // maestro_id NULO
+        
         Grupo::create([
             'nombre' => $request->nombre,
             'cupo_max' => $request->cupo_max,
@@ -53,7 +53,7 @@ class GrupoController extends Controller
 
     public function edit(Grupo $grupo)
     {
-        // Solo para editar datos, no maestro
+      
         $materias = Materia::all();
         return view('grupos.edit', compact('grupo', 'materias'));
     }

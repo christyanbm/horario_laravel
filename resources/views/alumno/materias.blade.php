@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mt-4">
 
-    {{-- Encabezado --}}
+   
     <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
         <div>
             <h2 class="fw-bold text-primary mb-0">Materias Inscritas</h2>
@@ -18,7 +18,7 @@
         </div>
     </div>
 
-    {{-- Tabla de materias inscritas --}}
+    
     <div class="card shadow-sm border-0">
         <div class="card-body">
             @if($gruposInscritos->isEmpty())
