@@ -12,7 +12,10 @@
             <h2 class="fw-bold text-primary">Selección de Horario</h2>
             <p class="text-muted">Bienvenido. Selecciona las materias para tu próximo ciclo.</p>
         </div>
-        <a href="{{ route('alumno.materias') }}">
+
+
+        <a href="{{ route('alumno.materias') }}" class="btn btn-outline-secondary">
+
             <i class="bi bi-calendar-check"></i> Ver Mi Horario Actual
         </a>
     </div>

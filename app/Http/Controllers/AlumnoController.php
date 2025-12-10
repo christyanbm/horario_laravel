@@ -69,21 +69,27 @@ class AlumnoController extends Controller
     // Materias pendientes
     $materiasPendientes = \App\Models\Materia::whereNotIn('id', $historial->pluck('materia_id'))->get();
 
-    // Promedio
-    $promedio = $historial->avg('calificacion');
+    // Promedio (filtrar valores numéricos)
+    $promedio = $historial->filter(fn($h) => is_numeric($h->calificacion))->avg('calificacion');
 
-    // Créditos cursados
-    $creditosCursados = $historial->sum('creditos_otorgados');
+    // Créditos cursados (convertir a int)
+    $creditosCursados = $historial->sum(function($item) {
+        return is_numeric($item->creditos_otorgados) ? (int)$item->creditos_otorgados : 0;
+    });
 
-    // Créditos aprobados
-    $creditosAprobados = $historial->where('calificacion','>=',70)->sum('creditos_otorgados');
+    // Créditos aprobados (solo notas >= 70)
+    $creditosAprobados = $historial->filter(function($item) {
+        return is_numeric($item->calificacion) && $item->calificacion >= 70;
+    })->sum(function($item) {
+        return is_numeric($item->creditos_otorgados) ? (int)$item->creditos_otorgados : 0;
+    });
 
     // Total de créditos (cursados + pendientes)
     $totalCreditos = $creditosCursados + $materiasPendientes->sum('creditos');
 
     // Agrupar materias por semestre
     $materiasPorSemestre = $historial->groupBy(function($item){
-        return $item->materia->semestre; // suponiendo que la materia tiene campo 'semestre'
+        return $item->materia->semestre;
     });
 
     return view('alumno.progreso', compact(
@@ -161,7 +167,7 @@ public function materias()
 
     // Validar créditos
     $totalSeleccion = $gruposSeleccionados->sum(function($g) {
-        return $g->materia->creditos ?? 0;
+        return (int)($g->materia->creditos ?? 0);
     });
 
     if ($totalSeleccion > $alumno->creditos) {
