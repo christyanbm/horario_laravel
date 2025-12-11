@@ -11,14 +11,24 @@
         <div class="card shadow-sm">
             <div class="card-body">
 
-              
+                {{-- MENSAJE GLOBAL --}}
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <i class="bi bi-check-circle"></i> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 @endif
 
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-x-circle"></i> {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                @php
+                    $conflictos = session('conflictos') ?? [];
+                @endphp
 
                 @if ($grupos->isEmpty())
                     <div class="alert alert-info text-center">
@@ -40,19 +50,15 @@
                             <tbody>
                                 @foreach ($grupos as $grupo)
                                     <tr>
-                                      
                                         <td>{{ $grupo->nombre }}</td>
 
-                                   
                                         <td>{{ $grupo->materia->nombre ?? 'Sin materia' }}</td>
 
-                                        <td>{{ $grupo->hora_inicio->format('H:i') }} - {{ $grupo->hora_fin->format('H:i') }}
-                                        </td>
+                                        <td>{{ $grupo->hora_inicio->format('H:i') }} - {{ $grupo->hora_fin->format('H:i') }}</td>
 
-                           
                                         <td>
                                             <select name="maestro_id[{{ $grupo->id }}]"
-                                                class="form-select @if (isset($conflictos[$grupo->id])) is-invalid @endif">
+                                                class="form-select @if(isset($conflictos[$grupo->id])) is-invalid @endif">
                                                 <option value="">-- Seleccionar maestro --</option>
                                                 @foreach ($maestros as $maestro)
                                                     <option value="{{ $maestro->id }}"
@@ -62,16 +68,21 @@
                                                 @endforeach
                                             </select>
 
+                                            {{-- ❌ MENSAJE DE CONFLICTO --}}
                                             @if (isset($conflictos[$grupo->id]))
-                                                <small class="text-danger">
-                                                    Conflicto de horario con los grupos:
-                                                    {{ implode(', ', $conflictos[$grupo->id]) }}
+                                                <small class="text-danger d-block mt-1">
+                                                    ❌ Este maestro ya tiene otra clase en ese horario.
                                                 </small>
+                                            @else
+                                                {{-- ✔ MENSAJE DE ÉXITO --}}
+                                                @if ($grupo->maestro_id)
+                                                    <small class="text-success d-block mt-1">
+                                                        ✔ Maestro asignado correctamente
+                                                    </small>
+                                                @endif
                                             @endif
 
                                         </td>
-
-
                                     </tr>
                                 @endforeach
                             </tbody>
