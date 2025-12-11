@@ -68,16 +68,16 @@
                                                 @endforeach
                                             </select>
 
-                                            {{-- ❌ MENSAJE DE CONFLICTO --}}
+                                          
                                             @if (isset($conflictos[$grupo->id]))
                                                 <small class="text-danger d-block mt-1">
-                                                    ❌ Este maestro ya tiene otra clase en ese horario.
+                                                     Este maestro ya tiene otra clase en ese horario.
                                                 </small>
                                             @else
-                                                {{-- ✔ MENSAJE DE ÉXITO --}}
+                                               
                                                 @if ($grupo->maestro_id)
                                                     <small class="text-success d-block mt-1">
-                                                        ✔ Maestro asignado correctamente
+                                                         Maestro asignado correctamente
                                                     </small>
                                                 @endif
                                             @endif
