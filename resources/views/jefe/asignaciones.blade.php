@@ -11,15 +11,22 @@
         <div class="card shadow-sm">
             <div class="card-body">
 
-              
+                {{-- Mensaje de éxito --}}
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <i class="bi bi-check-circle"></i> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 @endif
 
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-x-circle"></i> {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
 
+                {{-- Mensaje si no hay grupos --}}
                 @if ($grupos->isEmpty())
                     <div class="alert alert-info text-center">
                         No hay grupos creados.
@@ -40,16 +47,17 @@
                             <tbody>
                                 @foreach ($grupos as $grupo)
                                     <tr>
-                                      
+                                        {{-- Nombre del grupo --}}
                                         <td>{{ $grupo->nombre }}</td>
 
-                                   
+                                        {{-- Materia del grupo --}}
                                         <td>{{ $grupo->materia->nombre ?? 'Sin materia' }}</td>
 
+                                        {{-- Horario del grupo --}}
                                         <td>{{ $grupo->hora_inicio->format('H:i') }} - {{ $grupo->hora_fin->format('H:i') }}
                                         </td>
 
-                           
+                                        {{-- Selección de maestro --}}
                                         <td>
                                             <select name="maestro_id[{{ $grupo->id }}]"
                                                 class="form-select @if (isset($conflictos[$grupo->id])) is-invalid @endif">
@@ -62,16 +70,21 @@
                                                 @endforeach
                                             </select>
 
+
                                             @if (isset($conflictos[$grupo->id]))
                                                 <small class="text-danger">
-                                                    Conflicto de horario con los grupos:
+                                                    ⚠ Conflicto de horario con los grupos:
                                                     {{ implode(', ', $conflictos[$grupo->id]) }}
                                                 </small>
+                                            @else
+                                                @if ($grupo->maestro_id)
+                                                    <small class="text-success d-block mt-1">
+                                                        Maestro asignado correctamente
+                                                    </small>
+                                                @endif
                                             @endif
 
                                         </td>
-
-
                                     </tr>
                                 @endforeach
                             </tbody>
