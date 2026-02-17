@@ -222,9 +222,7 @@ Route::prefix('coordinador')
     // Guardar asignaciones
     Route::post('/asignaciones/guardar', [CoordinadorController::class, 'asignacionesGuardar'])->name('asignar.guardar');
   
-    Route::delete('/grupos/{grupo}/alumnos/{alumno}', 
-    [CoordinadorController::class, 'removeAlumno']
-)->name('grupos.removeAlumno');
+ 
 
 });
 

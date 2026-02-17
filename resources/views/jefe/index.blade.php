@@ -1,9 +1,9 @@
-@extends('layouts.app') {{-- Extiende el layout principal --}}
+@extends('layouts.app') 
 
 @section('title', 'Dashboard Jefe de Carrera')
 
 @section('content')
-    {{-- Incluimos el menú --}}
+   
     @include('partials.menu')
 
     <div class="container mt-4">
@@ -13,7 +13,7 @@
 
         <div class="row g-4 mt-3">
 
-            <!--Asignaciones-->
+           
             <a href="{{ route('jefe.asignaciones') }}" class="text-decoration-none">
                 <div class="card card-option p-3 text-center">
                     <i class="fa fa-folder fa-2x mb-2"></i>
@@ -21,7 +21,7 @@
                 </div>
             </a>
 
-            <!-- Reportes -->
+          
             <div class="col-md-4">
                 <a href="{{ route('jefe.reportes') }}" class="text-decoration-none">
                     <div class="card card-option p-3 text-center">
@@ -31,7 +31,7 @@
                 </a>
             </div>
 
-            <!-- Crear Alumno -->
+           
             <div class="col-md-4">
                 <a href="{{ route('jefe.alumnos.index') }}" class="text-decoration-none">
                     <div class="card card-option p-3 text-center">
@@ -41,7 +41,7 @@
                 </a>
             </div>
 
-            <!-- Crear Maestro -->
+           
             <div class="col-md-4">
                 <a href="{{ route('jefe.maestros.index') }}" class="text-decoration-none">
                     <div class="card card-option p-3 text-center">

@@ -7,7 +7,7 @@
 
     <h2 class="fw-bold text-primary mb-4">Tu Progreso Académico</h2>
 
-    {{-- Gráfica simplificada de resumen académico --}}
+
     <div class="card shadow-sm mb-5">
         <div class="card-header">Resumen Académico</div>
         <div class="card-body text-center">
@@ -30,7 +30,7 @@
         </div>
     </div>
 
-    {{-- Materias por semestre --}}
+
     @foreach($materiasPorSemestre as $semestre => $materias)
         <div class="card shadow-sm mb-4">
             <div class="card-header">Semestre {{ $semestre }}</div>
@@ -40,14 +40,14 @@
                         @php
                             if(isset($item->calificacion)){
                                 if($item->calificacion >= 70){
-                                    $color = 'bg-success text-white'; // verde: aprobada
+                                    $color = 'bg-success text-white'; 
                                 } else {
-                                    $color = 'bg-danger text-white'; // rojo: reprobada
+                                    $color = 'bg-danger text-white';
                                 }
                             } elseif(isset($item->enCurso) && $item->enCurso){
-                                $color = 'bg-primary text-white'; // azul: en curso
+                                $color = 'bg-primary text-white'; 
                             } else {
-                                $color = 'bg-warning text-dark'; // amarillo: pendiente
+                                $color = 'bg-warning text-dark'; 
                             }
                         @endphp
                         <div class="col">

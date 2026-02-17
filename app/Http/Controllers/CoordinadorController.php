@@ -16,14 +16,14 @@ class CoordinadorController extends Controller
     }
 public function horarios()
 {
-    // Traer todos los grupos con su materia, maestro y alumnos
+   
     $grupos = Grupo::with(['materia', 'maestro', 'alumnos'])->get();
 
-    // Obtener todos los IDs de alumnos y materias para filtrar las calificaciones
+    
     $alumnoIds = $grupos->pluck('alumnos.*.id')->flatten()->unique();
     $materiaIds = $grupos->pluck('materia_id')->unique();
 
-    // Traer calificaciones de esos alumnos en esas materias
+   
     $calificaciones = HistorialAcademico::whereIn('alumno_id', $alumnoIds)
                         ->whereIn('materia_id', $materiaIds)
                         ->get()
@@ -39,7 +39,7 @@ public function horarios()
         }
     }
 
-    // Opcional: para filtros
+   
     $materias = Materia::all();
 
     return view('coordinador.horarios', compact('grupos', 'materias'));
@@ -52,7 +52,7 @@ public function horarios()
 //   ALUMNOS (COORDINADOR)
 // =========================================
 
-/** Mostrar lista de alumnos */
+
 public function alumnosIndex()
 {
     $alumnos = User::role('Alumno')->get(); 

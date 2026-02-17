@@ -27,7 +27,7 @@
                 @csrf
                 @method('PUT')
 
-                {{-- Matrícula --}}
+             
                 <div class="mb-3">
                     <label class="form-label">Matrícula:</label>
                     <input 
@@ -39,7 +39,7 @@
                     >
                 </div>
 
-                {{-- Nombre --}}
+                
                 <div class="mb-3">
                     <label for="name" class="form-label">Nombre:</label>
                     <input
@@ -51,7 +51,7 @@
                     >
                 </div>
 
-                {{-- Email --}}
+                
                 <div class="mb-3">
                     <label for="email" class="form-label">Correo Electrónico:</label>
                     <input
@@ -63,20 +63,20 @@
                     >
                 </div>
 
-                {{-- Contraseña (opcional) --}}
+                
                 <div class="mb-3">
                     <label for="password" class="form-label">Nueva Contraseña (opcional):</label>
                     <input type="password" name="password" class="form-control">
                     <small class="text-muted">Dejar vacío si no deseas cambiarla.</small>
                 </div>
 
-                {{-- Confirmación --}}
+               
                 <div class="mb-3">
                     <label class="form-label">Confirmar Nueva Contraseña:</label>
                     <input type="password" name="password_confirmation" class="form-control">
                 </div>
 
-                {{-- Botones --}}
+               
                 <div class="d-flex justify-content-between">
                     <a href="{{ route('coordinador.alumnos.index') }}" class="btn btn-secondary">
                         ← Regresar

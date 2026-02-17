@@ -6,7 +6,7 @@
 @section('content')
 <div class="container mt-4">
 
-    {{-- Encabezado --}}
+   
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-primary">Mis Calificaciones</h2>
@@ -17,7 +17,7 @@
         </a>
     </div>
 
-    {{-- Feedback --}}
+    
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
@@ -26,7 +26,7 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
-    {{-- Tabla de Calificaciones --}}
+    
     <div class="card shadow-sm">
         <div class="card-header bg-white py-3">
             <h5 class="mb-0">Materias Cursadas</h5>

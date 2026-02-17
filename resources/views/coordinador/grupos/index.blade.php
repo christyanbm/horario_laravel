@@ -31,7 +31,7 @@
                         <td>{{ $grupo->nombre }}</td>
                         <td>{{ $grupo->cupo_max }}</td>
 
-                        {{-- Materia --}}
+                       
                         <td>
                             {{ $grupo->materia->nombre ?? 'Sin asignar' }}
                             <br>
@@ -40,13 +40,13 @@
                             </small>
                         </td>
 
-                        {{-- Horario solo hora --}}
+                        
                         <td>{{ $grupo->horario }}</td>
 
-                        {{-- Maestro --}}
+                        
                         <td>{{ $grupo->maestro->name ?? 'No asignado' }}</td>
 
-                        {{-- Acciones --}}
+                        
                         <td>
                             <a href="{{ route('coordinador.grupos.edit', $grupo->id) }}" class="btn btn-warning btn-sm">Editar</a>
 

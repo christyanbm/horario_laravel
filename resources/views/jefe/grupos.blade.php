@@ -5,7 +5,6 @@
 @section('content')
 <div class="container mt-4">
 
-    {{-- 1. Encabezado y Botón de Creación --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-primary mb-0">Gestión de Grupos</h2>
@@ -16,7 +15,7 @@
         </button>
     </div>
 
-    {{-- 2. Filtros --}}
+    
     <div class="card shadow-sm border-0 mb-4 bg-light">
         <div class="card-body py-3">
             <div class="row g-3">

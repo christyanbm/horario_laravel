@@ -4,7 +4,7 @@
 
 @section('content')
 
-    {{-- Menú debe ir fuera del container --}}
+    
     @include('partials.menu')
 
     <div class="container mt-4">
@@ -15,7 +15,7 @@
 
         <div class="row g-4 mt-3">
 
-            {{-- Horarios --}}
+            
             <div class="col-md-4">
                 <a href="{{ route('coordinador.horarios') }}" class="text-decoration-none">
                     <div class="card card-option p-3">
@@ -34,7 +34,7 @@
     </a>
 </div>
 
-            {{-- Grupos --}}
+            
             <div class="col-md-4">
                 <a href="{{ route('coordinador.grupos.index') }}" class="text-decoration-none">
                     <div class="card card-option p-3">

@@ -7,7 +7,7 @@
 <div class="container mt-4">
     <h2>Evaluar al maestro: {{ $maestro->name }}</h2>
 
-    {{-- Mensajes --}}
+    
     @if(session('warning'))
         <div class="alert alert-warning">{{ session('warning') }}</div>
         <a href="{{ route('alumno.evaluaciones.index') }}" class="btn btn-secondary mt-2">Volver</a>
