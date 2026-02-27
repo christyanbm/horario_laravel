@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@extends('partials.menu')
 @section('title', 'Lista de Jefes de Carrera')
 
 @section('content')
@@ -9,7 +9,7 @@
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-
+    <a href="{{ route('admin.usuarios.create') }}" class="btn btn-primary mb-3">Crear Nuevo Usuario</a>
     <table class="table table-bordered">
         <thead>
             <tr>

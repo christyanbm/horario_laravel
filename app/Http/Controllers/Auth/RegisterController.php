@@ -73,6 +73,7 @@ class RegisterController extends Controller
     // Asignar el rol seleccionado en el registro
     $user->assignRole($data['role']);
 
+
     return $user;
 }
 
