@@ -244,7 +244,6 @@ public function alumnosGrupo($grupo_id)
     return view('coordinador.grupos.alumnos', compact('grupo'));
 }
 
-/** Agregar alumno a un grupo */
 public function agregarAlumno(Request $request, $grupo_id)
 {
     $request->validate([
@@ -253,13 +252,27 @@ public function agregarAlumno(Request $request, $grupo_id)
 
     $grupo = Grupo::findOrFail($grupo_id);
 
+    // 1. Verificar si el alumno ya está en el grupo
     if ($grupo->alumnos->contains($request->alumno_id)) {
         return back()->with('warning', 'El alumno ya está en este grupo.');
     }
 
+    // 2. Verificar si el alumno ya acreditó la materia
+    $yaAcredito = HistorialAcademico::where('alumno_id', $request->alumno_id)
+                    ->where('materia_id', $grupo->materia_id)
+                    ->where('calificacion', '>=', 70) // regla de acreditación
+                    ->exists();
+
+    if ($yaAcredito) {
+        return back()->with('warning', 'Este alumno no se puede agregar porque ya acreditó esta materia.');
+    }
+
+    // 3. Agregar alumno al grupo
     $grupo->alumnos()->attach($request->alumno_id);
+
     return back()->with('success', 'Alumno agregado correctamente.');
 }
+
 
 /** Eliminar alumno de un grupo */
 public function eliminarAlumno($grupo_id, $alumno_id)

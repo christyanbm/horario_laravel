@@ -33,12 +33,11 @@ class JefeController extends Controller
 
 public function reportes()
 {
-    // Traer todos los alumnos con sus grupos, asistencias y calificaciones
+   
     $alumnos = User::role('alumno')
                    ->with(['grupos', 'asistencias', 'calificaciones'])
                    ->get();
 
-    // Mapear cada alumno para generar los datos del reporte
     $alumnosReporte = $alumnos->map(function($alumno) {
 
         $totalAsistencias = $alumno->asistencias->where('estado', 'presente')->count();
@@ -58,7 +57,7 @@ public function reportes()
         ];
     });
 
-    // Resumen por carrera
+   
     $carreras = $alumnosReporte->pluck('carrera')->unique();
 
     $inasistenciasPorCarrera = $carreras->map(fn($carrera) =>
@@ -69,7 +68,6 @@ public function reportes()
         $alumnosReporte->where('carrera', $carrera)->avg('promedio')
     );
 
-    // Retornar la vista con los datos listos
     return view('jefe.reportes', [
         'alumnos' => $alumnosReporte,
         'carreras' => $carreras,
@@ -108,7 +106,7 @@ public function alumnosStore(Request $request)
         'name'      => $request->name,
         'email'     => $request->email,
         'password'  => Hash::make($request->password),
-        'creditos'  => 30, // créditos iniciales igual que el coordinador
+        'creditos'  => 30, 
     ]);
 
     $alumno->assignRole('alumno');
@@ -229,9 +227,6 @@ public function alumnosStore(Request $request)
                          ->with('success', 'Maestro eliminado correctamente.');
     }
 
-    // ========================
-    //   ASIGNAR MAESTRO A GRUPO
-    // ========================
 
 public function asignarMaestroForm()
 {
@@ -247,7 +242,7 @@ public function asignarMaestroForm()
             if ($grupo->id == $otro->id || !$otro->maestro_id) continue;
             if ($grupo->maestro_id != $otro->maestro_id) continue;
 
-            // Detecta solapamiento
+            
             if ($grupo->hora_inicio < $otro->hora_fin && $grupo->hora_fin > $otro->hora_inicio) {
                 $conflictos[$grupo->id][] = $otro->id;
             }
@@ -271,18 +266,15 @@ public function asignarMaestroStore(Request $request)
     foreach ($request->maestro_id as $grupoId => $maestroId) {
         $grupo = Grupo::find($grupoId);
         if ($grupo && $maestroId) {
-            // Revisar conflicto de horario
-            $conflicto = Grupo::where('maestro_id', $maestroId)
-                ->where('id', '<>', $grupo->id)
-                ->where(function($q) use ($grupo) {
-                    $q->whereBetween('hora_inicio', [$grupo->hora_inicio, $grupo->hora_fin])
-                      ->orWhereBetween('hora_fin', [$grupo->hora_inicio, $grupo->hora_fin])
-                      ->orWhere(function($q2) use ($grupo) {
-                          $q2->where('hora_inicio', '<=', $grupo->hora_inicio)
-                             ->where('hora_fin', '>=', $grupo->hora_fin);
-                      });
-                })
-                ->exists();
+          
+     $conflicto = Grupo::where('maestro_id', $maestroId)
+    ->where('id', '<>', $grupo->id)
+    ->where(function($q) use ($grupo) {
+        $q->where('hora_inicio', '<', $grupo->hora_fin)
+          ->where('hora_fin', '>', $grupo->hora_inicio);
+    })
+    ->exists();
+
 
             if ($conflicto) {
                 $conflictos[] = "El maestro asignado al grupo {$grupo->nombre} ya tiene otra clase en ese horario.";
@@ -293,9 +285,10 @@ public function asignarMaestroStore(Request $request)
         }
     }
 
-    if (!empty($conflictos)) {
-        return redirect()->back()->with('error', implode('<br>', $conflictos));
-    }
+   if (!empty($conflictos)) {
+    return redirect()->back()->with('error', 'El maestro ya tiene otra clase en ese horario.');
+}
+
 
     return redirect()->route('jefe.asignaciones')
                      ->with('success', 'Asignaciones de maestros actualizadas correctamente.');

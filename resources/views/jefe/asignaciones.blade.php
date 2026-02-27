@@ -14,8 +14,15 @@
               
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <i class="bi bi-check-circle"></i> {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-x-circle"></i> {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 @endif
 
@@ -62,16 +69,21 @@
                                                 @endforeach
                                             </select>
 
+
                                             @if (isset($conflictos[$grupo->id]))
                                                 <small class="text-danger">
                                                     Conflicto de horario con los grupos:
                                                     {{ implode(', ', $conflictos[$grupo->id]) }}
                                                 </small>
+                                            @else
+                                                @if ($grupo->maestro_id)
+                                                    <small class="text-success d-block mt-1">
+                                                        Maestro asignado correctamente
+                                                    </small>
+                                                @endif
                                             @endif
 
                                         </td>
-
-
                                     </tr>
                                 @endforeach
                             </tbody>
