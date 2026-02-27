@@ -12,7 +12,10 @@
             <div class="card-header bg-primary text-white">
                 <strong>Grupo:</strong> {{ $grupo->nombre }} |
                 <strong>Materia:</strong> {{ $grupo->materia->nombre ?? 'Sin Materia' }} |
-                <strong>Maestro:</strong> {{ $grupo->maestro->name ?? 'Sin Maestro' }}
+                <strong>Maestro:</strong> {{ $grupo->maestro->name ?? 'Sin Maestro' }} |
+                    <strong>Horario:</strong>  
+                {{ \Carbon\Carbon::parse($grupo->hora_inicio)->format('H:i') }} - 
+                {{ \Carbon\Carbon::parse($grupo->hora_fin)->format('H:i') }}
             </div>
             <div class="card-body">
                 <h5>Alumnos inscritos:</h5>

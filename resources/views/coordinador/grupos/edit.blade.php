@@ -20,7 +20,7 @@
                 <input type="number" name="cupo_max" class="form-control" value="{{ old('cupo_max', $grupo->cupo_max) }}" required>
             </div>
 
-            {{-- Materia --}}
+            
             <div class="mb-3">
                 <label class="form-label">Materia</label>
                 <select name="materia_id" class="form-select" required>

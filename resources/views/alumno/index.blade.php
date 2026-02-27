@@ -1,15 +1,10 @@
 @extends('layouts.app')
 
-{{-- Incluir menú --}}
-@include('partials.menu')
-
 @section('title', 'Dashboard Alumno')
 
 @section('content')
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Bienvenido, {{ Auth::user()->name }}</h2>
-    </div>
+    <h2 class="mb-4">Bienvenido, {{ Auth::user()->name }}</h2>
 
     <div class="row g-4">
 
@@ -51,18 +46,7 @@
                 </div>
             </a>
         </div>
- {{-- Evaluación Docente --}}
-<div class="col-md-4">
-    <a href="{{ route('alumno.evaluaciones.index') }}" class="text-decoration-none">
-        <div class="card text-center shadow-sm">
-            <div class="card-body">
-                <i class="fas fa-user-check fa-2x mb-2"></i>
-                <h5 class="card-title">Evaluación Docente</h5>
-                <p class="card-text">Realiza evaluaciones a tus maestros</p>
-            </div>
-        </div>
-    </a>
-</div>
+
     </div>
 </div>
 @endsection

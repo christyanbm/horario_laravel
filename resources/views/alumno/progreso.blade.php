@@ -1,91 +1,125 @@
 @extends('layouts.app')
-@extends('partials.menu')
+
 @section('title', 'Progreso Académico')
 
 @section('content')
 <div class="container mt-4">
 
-    <h2 class="fw-bold text-primary mb-4">Tu Progreso Académico</h2>
+    {{-- 1. Encabezado con información del perfil --}}
+    <div class="row mb-4 align-items-end">
+        <div class="col-md-8">
+            <h2 class="fw-bold text-primary"><i class="bi bi-journal-medical"></i> Tu Progreso Académico</h2>
+            <p class="text-muted mb-0">Ingeniería en Sistemas Computacionales</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <button class="btn btn-outline-primary">
+                <i class="bi bi-file-earmark-pdf"></i> Descargar Kárdex
+            </button>
+        </div>
+    </div>
 
-    {{-- Gráfica simplificada de resumen académico --}}
-    <div class="card shadow-sm mb-5">
-        <div class="card-header">Resumen Académico</div>
-        <div class="card-body text-center">
-            <h4>Promedio General</h4>
-            <h1 class="display-1 text-primary fw-bold">{{ $promedio }}</h1>
-            <div class="mt-4">
-                <h6>Créditos Cursados: {{ $creditosCursados }} / {{ $totalCreditos }}</h6>
-                <div class="progress mb-3" style="height: 20px;">
-                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ ($creditosCursados/$totalCreditos)*100 }}%">
-                        {{ number_format(($creditosCursados/$totalCreditos)*100, 1) }}%
-                    </div>
+    {{-- 2. Tarjetas de Resumen (Dashboard) --}}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-start border-primary border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted small">Promedio General</h6>
+                    <h2 class="display-6 fw-bold">9.4</h2>
+                    <small class="text-success"><i class="bi bi-arrow-up"></i> Subió 0.2 este ciclo</small>
                 </div>
-                <h6>Créditos Aprobados: {{ $creditosAprobados }} / {{ $totalCreditos }}</h6>
-                <div class="progress" style="height: 20px;">
-                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ ($creditosAprobados/$totalCreditos)*100 }}%">
-                        {{ number_format(($creditosAprobados/$totalCreditos)*100, 1) }}%
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-start border-success border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted small">Créditos Acumulados</h6>
+                    <h2 class="display-6 fw-bold">180 / 260</h2>
+                    <div class="progress mt-2" style="height: 6px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 70%" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
+                    <small class="text-muted">70% de avance reticular</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-start border-danger border-4 shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-uppercase text-muted small">Materias Pendientes</h6>
+                    <h2 class="display-6 fw-bold text-danger">1</h2>
+                    <small class="text-muted">Tienes materias en recurso</small>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Materias por semestre --}}
-    @foreach($materiasPorSemestre as $semestre => $materias)
-        <div class="card shadow-sm mb-4">
-            <div class="card-header">Semestre {{ $semestre }}</div>
-            <div class="card-body">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3">
-                    @foreach($materias as $item)
-                        @php
-                            if(isset($item->calificacion)){
-                                if($item->calificacion >= 70){
-                                    $color = 'bg-success text-white'; // verde: aprobada
-                                } else {
-                                    $color = 'bg-danger text-white'; // rojo: reprobada
-                                }
-                            } elseif(isset($item->enCurso) && $item->enCurso){
-                                $color = 'bg-primary text-white'; // azul: en curso
-                            } else {
-                                $color = 'bg-warning text-dark'; // amarillo: pendiente
-                            }
-                        @endphp
-                        <div class="col">
-                            <div class="card {{ $color }} text-center shadow-sm tablero-card">
-                                <div class="card-body p-3">
-                                    <h6 class="card-title">{{ $item->materia->nombre ?? $item->nombre }}</h6>
-                                    @if(isset($item->maestro))
-                                        <p class="mb-1 small">Docente: {{ $item->maestro->name }}</p>
-                                    @endif
-                                    <p class="fw-bold mb-0">
-                                        @if(isset($item->calificacion))
-                                            {{ $item->calificacion }}
-                                        @elseif(isset($item->enCurso) && $item->enCurso)
-                                            En curso
-                                        @else
-                                            Pendiente
-                                        @endif
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+    {{-- 3. Tabla de Calificaciones del Semestre Actual --}}
+    <div class="card shadow-sm mb-5">
+        <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Calificaciones: Semestre Ene-Jun 2025</h5>
+            <span class="badge bg-info text-dark">Ciclo Activo</span>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Materia</th>
+                            <th class="text-center">P1</th>
+                            <th class="text-center">P2</th>
+                            <th class="text-center">P3</th>
+                            <th class="text-center fw-bold">Final</th>
+                            <th class="text-center">Estatus</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{-- EJEMPLO: Aquí iría tu @foreach($calificaciones as $calif) --}}
+                        <tr>
+                            <td>
+                                <span class="fw-bold">Base de Datos II</span><br>
+                                <small class="text-muted">Docente: Dra. Ruiz</small>
+                            </td>
+                            <td class="text-center">90</td>
+                            <td class="text-center">85</td>
+                            <td class="text-center text-muted">-</td> {{-- Aún no calificado --}}
+                            <td class="text-center fw-bold text-primary">87.5</td> {{-- Promedio actual --}}
+                            <td class="text-center">
+                                <span class="badge bg-primary">Cursando</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="fw-bold">Estructura de Datos</span><br>
+                                <small class="text-muted">Docente: Ing. Mota</small>
+                            </td>
+                            <td class="text-center">100</td>
+                            <td class="text-center">95</td>
+                            <td class="text-center text-muted">-</td>
+                            <td class="text-center fw-bold text-primary">97.5</td>
+                            <td class="text-center">
+                                <span class="badge bg-success">Aprobando</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="fw-bold">Cálculo Vectorial</span><br>
+                                <small class="text-muted">Docente: Lic. Estrada</small>
+                            </td>
+                            <td class="text-center text-danger fw-bold">60</td>
+                            <td class="text-center text-danger fw-bold">50</td>
+                            <td class="text-center text-muted">-</td>
+                            <td class="text-center fw-bold text-danger">55.0</td>
+                            <td class="text-center">
+                                <span class="badge bg-warning text-dark">En Riesgo</span>
+                            </td>
+                        </tr>
+                        {{-- Fin del ejemplo --}}
+                    </tbody>
+                </table>
             </div>
         </div>
-    @endforeach
-
+        <div class="card-footer bg-white text-muted small">
+            * P1, P2, P3 corresponden a las evaluaciones parciales. La calificación mínima aprobatoria es 70.
+        </div>
+    </div>
 </div>
-
-{{-- Estilos para tablero --}}
-<style>
-.tablero-card {
-    min-height: 120px;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-.tablero-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-}
-</style>
 @endsection

@@ -21,32 +21,16 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
-   public function definition(): array
-{
-    // Prefijos permitidos
-    $prefijos = ['19', '20', '21'];
-
-    // Escoge uno al azar
-    $prefijo = $this->faker->randomElement($prefijos);
-
-    // Genera los números restantes (4 dígitos)
-    $numero = $this->faker->numerify('####');
-
-    return [
-        'name' => fake()->name(),
-        'email' => fake()->unique()->safeEmail(),
-        'email_verified_at' => now(),
-        'password' => static::$password ??= Hash::make('password'),
-        'remember_token' => Str::random(10),
-
-        // Aquí agregamos la matrícula
-        'matricula' => $prefijo . $numero,
-
-        // Valor inicial de créditos
-        'creditos' => $this->faker->numberBetween(0, 50),
-    ];
-}
-
+    public function definition(): array
+    {
+        return [
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'remember_token' => Str::random(10),
+        ];
+    }
 
     /**
      * Indicate that the model's email address should be unverified.

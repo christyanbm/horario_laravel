@@ -7,7 +7,7 @@
 <div class="container mt-4">
 
     <div class="text-center mb-4">
-        <h2 class="fw-bold">📘 Calificaciones Finales</h2>
+        <h2 class="fw-bold"> Calificaciones Finales</h2>
         <p class="text-muted">Selecciona un grupo para registrar o editar sus calificaciones</p>
     </div>
 
@@ -34,7 +34,7 @@
 
                                 <div class="d-flex justify-content-between mt-3">
                                     <small class="text-muted">
-                                        ⏰ {{ $grupo->hora_inicio }} — {{ $grupo->hora_fin }}
+                                         {{ $grupo->hora_inicio }} — {{ $grupo->hora_fin }}
                                     </small>
                                     <span class="badge bg-primary px-3 py-2 shadow-sm">Calificar</span>
                                 </div>

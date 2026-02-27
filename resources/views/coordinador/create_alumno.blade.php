@@ -7,7 +7,7 @@
 <div class="container mt-4">
     <h2 class="mb-4">Crear Alumno</h2>
 
-    {{-- Mensajes de éxito o error --}}
+    
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif

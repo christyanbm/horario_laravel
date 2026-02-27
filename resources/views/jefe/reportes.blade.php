@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@extends('partials.menu')
+
 @section('title', 'Reportes Académicos')
 
 @section('content')
@@ -14,13 +14,15 @@
             <p class="text-muted small mt-1 mb-0">Vista de Jefe de Carrera</p>
         </div>
         <div>
-            
+            {{-- Botones puramente visuales por ahora --}}
+            <button class="btn btn-outline-secondary btn-sm me-1"><i class="bi bi-printer"></i> Imprimir</button>
+            <button class="btn btn-primary btn-sm"><i class="bi bi-download"></i> Descargar PDF</button>
         </div>
     </div>
 
     <div class="row g-4">
-
-        {{-- 2. Resumen por Carrera --}}
+        
+        {{-- 2. Resumen por Carrera (Ahora arriba para lectura rápida) --}}
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3">
@@ -36,7 +38,7 @@
                                     <th class="ps-4">Carrera</th>
                                     <th class="text-center">Total Inasistencias</th>
                                     <th class="text-center">Promedio General</th>
-                                    <th style="width: 30%;">Indicador Visual</th>
+                                    <th style="width: 30%;">Indicador Visual</th> {{-- Columna extra solo visual --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,9 +50,10 @@
                                             {{ number_format($promedioPorCarrera[$index], 2) }}
                                         </td>
                                         <td class="pe-4">
+                                            {{-- Barra de progreso visual basada en el promedio (CSS puro) --}}
                                             <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar {{ $promedioPorCarrera[$index] >= 80 ? 'bg-success' : 'bg-warning' }}"
-                                                     role="progressbar"
+                                                <div class="progress-bar {{ $promedioPorCarrera[$index] >= 80 ? 'bg-success' : 'bg-warning' }}" 
+                                                     role="progressbar" 
                                                      style="width: {{ $promedioPorCarrera[$index] }}%">
                                                 </div>
                                             </div>
@@ -64,7 +67,7 @@
             </div>
         </div>
 
-        {{-- 3. Tabla Detallada de Alumnos --}}
+        {{-- 3. Tabla de Alumnos Detallada --}}
         <div class="col-12">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
@@ -80,48 +83,44 @@
                                 <tr>
                                     <th class="ps-4">Nombre del Alumno</th>
                                     <th>Carrera</th>
-                                    <th class="text-center">Asistencias</th>
                                     <th class="text-center">Inasistencias</th>
-                                    <th class="text-center">Justificados</th>
                                     <th class="text-center">Promedio</th>
-                                    <th class="text-center">Estatus</th>
+                                    <th class="text-center">Estatus</th> {{-- Columna visual extra --}}
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($alumnos as $alumno)
+                                    {{-- Lógica simple de colores para mejorar la UX --}}
                                     @php
-                                        $esRiesgoProm = $alumno->promedio < 70;
-                                        $esRiesgoAsist = $alumno->inasistencias > 10;
+                                        $esRiesgo = $alumno->promedio < 70;
+                                        $esAlertaAsist = $alumno->inasistencias > 10;
                                     @endphp
+                                    
                                     <tr>
-                                        <td class="ps-4 fw-bold">{{ $alumno->name }}</td>
+                                        <td class="ps-4">
+                                            <span class="fw-bold text-dark">{{ $alumno->name }}</span>
+                                        </td>
                                         <td class="small text-muted">{{ $alumno->carrera }}</td>
-
-                                        {{-- Asistencias --}}
+                                        
+                                        {{-- Inasistencias con alerta visual --}}
                                         <td class="text-center">
-                                            <span class="badge bg-success">{{ $alumno->asistencias }}</span>
+                                            @if($esAlertaAsist)
+                                                <span class="badge bg-danger rounded-pill">{{ $alumno->inasistencias }}</span>
+                                            @else
+                                                <span class="text-secondary">{{ $alumno->inasistencias }}</span>
+                                            @endif
                                         </td>
 
-                                        {{-- Inasistencias --}}
-                                        <td class="text-center">
-                                            <span class="badge bg-danger">{{ $alumno->inasistencias }}</span>
-                                        </td>
-
-                                        {{-- Justificados --}}
-                                        <td class="text-center">
-                                            <span class="badge bg-warning text-dark">{{ $alumno->justificados }}</span>
-                                        </td>
-
-                                        {{-- Promedio --}}
-                                        <td class="text-center fw-bold {{ $esRiesgoProm ? 'text-danger' : 'text-success' }}">
+                                        {{-- Promedio con color semántico --}}
+                                        <td class="text-center fw-bold {{ $esRiesgo ? 'text-danger' : 'text-success' }}">
                                             {{ number_format($alumno->promedio, 2) }}
                                         </td>
 
-                                        {{-- Estatus --}}
+                                        {{-- Badge de Estatus Visual --}}
                                         <td class="text-center">
-                                            @if($esRiesgoProm)
+                                            @if($esRiesgo)
                                                 <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">Reprobando</span>
-                                            @elseif($esRiesgoAsist)
+                                            @elseif($esAlertaAsist)
                                                 <span class="badge bg-warning text-dark border border-warning">Riesgo Faltas</span>
                                             @else
                                                 <span class="badge bg-success bg-opacity-10 text-success border border-success">Regular</span>
@@ -133,6 +132,7 @@
                         </table>
                     </div>
                 </div>
+                {{-- Footer decorativo --}}
                 <div class="card-footer bg-white py-3 text-center">
                     <small class="text-muted">Fin del reporte académico</small>
                 </div>
